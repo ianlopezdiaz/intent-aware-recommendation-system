@@ -31,16 +31,31 @@ The original challenge description is included in this repository for historical
 ## Repository Structure
 
 ```text
-.
+intent-aware-recommendation-system/
+│
 ├── app/
 ├── data/
+│   ├── raw/
+│   │   └── elo7_recruitment_dataset.csv
+│   ├── interim/
+│   ├── processed/
+│   └── external/
+│
 ├── docs/
+│   ├── elo7-ds-challenge-pt.md
+│   └── elo7-ds-challenge-en.md
+│
 ├── models/
 ├── notebooks/
 ├── reports/
 ├── src/
+│
+├── _quarto.yml
+├── index.qmd
+│
 ├── README.md
-└── requirements.txt
+├── requirements.txt
+└── LICENSE
 ```
 
 ## Project Roadmap
