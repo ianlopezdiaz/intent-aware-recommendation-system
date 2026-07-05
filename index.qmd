@@ -1,0 +1,72 @@
+---
+title: "Intent-Aware Recommendation System"
+description: "End-to-end machine learning system combining product classification, search intent modeling, and recommendation."
+---
+
+## Overview
+
+This project implements an end-to-end machine learning system for intent-aware product recommendation using real e-commerce interaction data.
+
+The system combines three core components:
+
+- **Product Classification**: supervised learning model to predict product categories.
+- **Search Intent Modeling**: unsupervised or weakly supervised inference of user intent from search queries.
+- **Recommendation System**: ranking-based model to retrieve relevant products.
+
+The final objective is to transform a raw search query into structured predictions and personalized recommendations.
+
+---
+
+## Problem Statement
+
+Given a user search query, the system must:
+
+1. Predict the most likely product category.
+2. Infer the user's search intent.
+3. Recommend the top 10 most relevant products.
+
+---
+
+## Methodology
+
+The project follows a structured machine learning pipeline:
+
+- Exploratory Data Analysis (EDA)
+- Feature engineering (text + structured data)
+- Supervised learning (classification)
+- Unsupervised learning (intent modeling)
+- Ranking / recommendation system
+- System integration
+- Evaluation
+
+---
+
+## Dataset
+
+The dataset consists of user search interactions on an e-commerce platform, including:
+
+- Search queries
+- Product metadata (title, tags, price, etc.)
+- Click behavior
+- Product categories
+
+See the full challenge specification for details.
+
+---
+
+## Project Structure
+
+The repository is organized as follows:
+
+- `notebooks/` → end-to-end ML pipeline
+- `src/` → reusable code (features, models, evaluation)
+- `data/` → raw and processed datasets
+- `models/` → trained artifacts
+- `docs/` → original challenge description (EN + PT-BR)
+- `reports/` → analysis outputs and visualizations
+
+---
+
+## Status
+
+This project is currently under active development. Each component is being implemented and validated incrementally through the notebook pipeline.

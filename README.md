@@ -34,6 +34,7 @@ The original challenge description is included in this repository for historical
 intent-aware-recommendation-system/
 │
 ├── app/
+│
 ├── data/
 │   ├── raw/
 │   │   └── elo7_recruitment_dataset.csv
@@ -46,16 +47,32 @@ intent-aware-recommendation-system/
 │   └── elo7-ds-challenge-en.md
 │
 ├── models/
+│
 ├── notebooks/
+│   ├── README.md
+│   ├── 01_eda.ipynb
+│   ├── 02_product_classification.ipynb
+│   ├── 03_search_intent_modeling.ipynb
+│   ├── 04_recommendation_engine.ipynb
+│   ├── 05_system_integration.ipynb
+│   └── 06_evaluation.ipynb
+│
 ├── reports/
+│
 ├── src/
+│   ├── data/
+│   ├── features/
+│   ├── models/
+│   ├── evaluation/
+│   └── utils/
 │
 ├── _quarto.yml
 ├── index.qmd
 │
 ├── README.md
 ├── requirements.txt
-└── LICENSE
+├── LICENSE
+└── TODO.md
 ```
 
 ## Project Roadmap

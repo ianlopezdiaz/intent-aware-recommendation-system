@@ -1,0 +1,49 @@
+project:
+  type: website
+
+website:
+  title: "Intent-Aware Recommendation System"
+  site-url: ""
+
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+
+      - text: Notebooks
+        menu:
+          - href: notebooks/01_eda.ipynb
+            text: "01 - EDA"
+          - href: notebooks/02_product_classification.ipynb
+            text: "02 - Product Classification"
+          - href: notebooks/03_search_intent_modeling.ipynb
+            text: "03 - Search Intent"
+          - href: notebooks/04_recommendation_engine.ipynb
+            text: "04 - Recommendation Engine"
+          - href: notebooks/05_system_integration.ipynb
+            text: "05 - System Integration"
+          - href: notebooks/06_evaluation.ipynb
+            text: "06 - Evaluation"
+
+      - href: docs/elo7-ds-challenge-en.md
+        text: Challenge
+
+      - href: docs/elo7-ds-challenge-pt.md
+        text: PT-BR
+    right:
+      - icon: github
+        href: https://ianlopezdiaz.github.io/portfolio
+  page-footer:
+    left: "© 2026 ianlopezdiaz"
+    right: "Built with [Quarto](https://quarto.org/)"
+
+format:
+  html:
+    theme:
+      dark: solar
+      light: minty
+    toc: true
+    toc-depth: 3
+    code-fold: show
+    highlight-style: github
+
