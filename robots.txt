@@ -1,1 +1,1 @@
-Sitemap: /sitemap.xml
+Sitemap: https://ianlopezdiaz.github.io/intent-aware-recommendation-system/sitemap.xml
