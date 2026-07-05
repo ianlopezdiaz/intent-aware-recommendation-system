@@ -25,8 +25,8 @@ Rather than preserving the original submission, this repository revisits the pro
 
 The original challenge description is included in this repository for historical context and can be found in:
 
-- [Original challange (Brazilian Portuguese)](docs/elo7-ds-challenge-pt.md)
-- [English translation](docs/elo7-ds-challenge-en.md)
+- [Original challange (Brazilian Portuguese)](docs/elo7-ds-challange-pt.md)
+- [English translation](docs/elo7-ds-challange-en.md)
 
 ## Repository Structure
 
