@@ -31,8 +31,12 @@ website:
       - href: docs/elo7-ds-challenge-pt.md
         text: PT-BR
     right:
-      - icon: github
+      - text: Portfolio
         href: https://ianlopezdiaz.github.io/portfolio
+
+      - icon: github
+        href: https://github.com/ianlopezdiaz/intent-aware-recommendation-system
+
   page-footer:
     left: "© 2026 ianlopezdiaz"
     right: "Built with [Quarto](https://quarto.org/)"
