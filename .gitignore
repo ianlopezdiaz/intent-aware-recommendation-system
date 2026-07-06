@@ -1,5 +1,58 @@
-/.quarto/
-**/*.quarto_ipynb
+# =========================
+# Python
+# =========================
 
-/.vscode/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+
+# =========================
+# Jupyter
+# =========================
+
+.ipynb_checkpoints/
+
+# =========================
+# Quarto
+# =========================
+
+.quarto/
+*.quarto_ipynb
+
+# =========================
+# VS Code
+# =========================
+
+.vscode/
 *.code-workspace
+
+# =========================
+# Testing & Coverage
+# =========================
+
+.pytest_cache/
+.coverage
+htmlcov/
+
+# =========================
+# Build & Packaging
+# =========================
+
+build/
+dist/
+*.egg-info/
+
+# =========================
+# Operating Systems
+# =========================
+
+.DS_Store
+Thumbs.db
