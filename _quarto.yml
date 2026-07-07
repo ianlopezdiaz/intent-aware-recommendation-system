@@ -12,8 +12,8 @@ website:
 
       - text: Notebooks
         menu:
-          - href: notebooks/01_eda.ipynb
-            text: "01 - EDA"
+          - href: notebooks/01_exploratory_data_analysis.ipynb
+            text: "01 - Exploratory Data Analysis (EDA)"
           - href: notebooks/02_product_classification.ipynb
             text: "02 - Product Classification"
           - href: notebooks/03_search_intent_modeling.ipynb

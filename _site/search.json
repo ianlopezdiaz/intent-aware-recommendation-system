@@ -39,7 +39,7 @@
     "href": "index.html#project-structure",
     "title": "Intent-Aware Recommendation System",
     "section": "Project Structure",
-    "text": "Project Structure\nThe repository is organized as follows:\n\nnotebooks/ → end-to-end ML pipeline\nsrc/ → reusable code (features, models, evaluation)\ndata/ → raw and processed datasets\nmodels/ → trained artifacts\ndocs/ → original challenge description (EN + PT-BR)\nreports/ → analysis outputs and visualizations"
+    "text": "Project Structure\nThe repository is organized as follows:\nintent-aware-recommendation-system/\n│\n├── app/\n│\n├── data/\n│   ├── raw/\n│   │   └── elo7_recruitment_dataset.csv\n│   ├── interim/\n│   ├── processed/\n│   └── external/\n│\n├── docs/\n│   ├── elo7-ds-challenge-pt.md\n│   └── elo7-ds-challenge-en.md\n│\n├── models/\n│\n├── notebooks/\n│   ├── README.md\n│   ├── 01_exploratory_data_analysis.ipynb\n│   ├── 02_product_classification.ipynb\n│   ├── 03_search_intent_modeling.ipynb\n│   ├── 04_recommendation_engine.ipynb\n│   ├── 05_system_integration.ipynb\n│   └── 06_evaluation.ipynb\n│\n├── reports/\n│\n├── src/\n│   ├── data/\n│   ├── features/\n│   ├── models/\n│   ├── evaluation/\n│   └── utils/\n│\n├── _quarto.yml\n├── index.qmd\n│\n├── README.md\n├── requirements.txt\n├── LICENSE\n└── TODO.md"
   },
   {
     "objectID": "index.html#status",
@@ -126,8 +126,8 @@
     "text": "Code\nimport numpy as np\nimport pandas as pd"
   },
   {
-    "objectID": "notebooks/03_search_intent_modeling.html",
-    "href": "notebooks/03_search_intent_modeling.html",
+    "objectID": "notebooks/05_system_integration.html",
+    "href": "notebooks/05_system_integration.html",
     "title": "Intent-Aware Recommendation System",
     "section": "",
     "text": "Code\nimport numpy as np\nimport pandas as pd"
@@ -217,15 +217,15 @@
     "text": "Streamlit demo\nFastAPI endpoint\nDocker support\nUnit tests\nCI with GitHub Actions\nSentence Transformers\nSHAP explanations\nInteractive recommendation visualization\n\nintent-aware-recommendation-system/\n│\n├── README.md\n├── LICENSE\n├── .gitignore\n├── requirements.txt\n├── pyproject.toml\n│\n├── data/\n│   ├── raw/\n│   ├── interim/\n│   ├── processed/\n│   └── README.md\n│\n├── notebooks/\n│   ├── 01-data-understanding.ipynb\n│   ├── 02-product-classification.ipynb\n│   ├── 03-search-intent-modeling.ipynb\n│   ├── 04-recommendation-engine.ipynb\n│   ├── 05-system-integration.ipynb\n│   └── 06-evaluation.ipynb\n│\n├── src/\n│   ├── __init__.py\n│   ├── data/\n│   │   ├── __init__.py\n│   │   ├── load.py\n│   │   └── preprocess.py\n│   │\n│   ├── features/\n│   │   ├── __init__.py\n│   │   ├── text.py\n│   │   └── numerical.py\n│   │\n│   ├── models/\n│   │   ├── __init__.py\n│   │   ├── classifier.py\n│   │   ├── intent.py\n│   │   └── recommender.py\n│   │\n│   ├── evaluation/\n│   │   ├── __init__.py\n│   │   └── metrics.py\n│   │\n│   └── pipeline.py\n│\n├── models/\n│\n├── reports/\n│   └── figures/\n│\n├── docs/\n│   └── original-challenge.md\n│\n└── app/\n    └── cli.py"
   },
   {
-    "objectID": "notebooks/05_system_integration.html",
-    "href": "notebooks/05_system_integration.html",
+    "objectID": "notebooks/01_exploratory_data_analysis.html",
+    "href": "notebooks/01_exploratory_data_analysis.html",
     "title": "Intent-Aware Recommendation System",
     "section": "",
     "text": "Code\nimport numpy as np\nimport pandas as pd"
   },
   {
-    "objectID": "notebooks/01_eda.html",
-    "href": "notebooks/01_eda.html",
+    "objectID": "notebooks/03_search_intent_modeling.html",
+    "href": "notebooks/03_search_intent_modeling.html",
     "title": "Intent-Aware Recommendation System",
     "section": "",
     "text": "Code\nimport numpy as np\nimport pandas as pd"

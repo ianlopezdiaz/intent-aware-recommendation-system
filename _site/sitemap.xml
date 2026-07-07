@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>/index.html</loc>
-    <lastmod>2026-07-05T18:48:03.366Z</lastmod>
+    <lastmod>2026-07-07T03:05:52.246Z</lastmod>
   </url>
   <url>
     <loc>/docs/elo7-ds-challenge-en.html</loc>
@@ -13,8 +13,8 @@
     <lastmod>2026-07-06T09:57:54.317Z</lastmod>
   </url>
   <url>
-    <loc>/notebooks/03_search_intent_modeling.html</loc>
-    <lastmod>2026-07-06T09:58:02.922Z</lastmod>
+    <loc>/notebooks/05_system_integration.html</loc>
+    <lastmod>2026-07-06T09:58:21.129Z</lastmod>
   </url>
   <url>
     <loc>/notebooks/04_recommendation_engine.html</loc>
@@ -25,12 +25,12 @@
     <lastmod>2026-07-05T18:48:03.316Z</lastmod>
   </url>
   <url>
-    <loc>/notebooks/05_system_integration.html</loc>
-    <lastmod>2026-07-06T09:58:21.129Z</lastmod>
+    <loc>/notebooks/01_exploratory_data_analysis.html</loc>
+    <lastmod>2026-07-07T03:01:57.856Z</lastmod>
   </url>
   <url>
-    <loc>/notebooks/01_eda.html</loc>
-    <lastmod>2026-07-06T09:57:47.114Z</lastmod>
+    <loc>/notebooks/03_search_intent_modeling.html</loc>
+    <lastmod>2026-07-06T09:58:02.922Z</lastmod>
   </url>
   <url>
     <loc>/notebooks/06_evaluation.html</loc>

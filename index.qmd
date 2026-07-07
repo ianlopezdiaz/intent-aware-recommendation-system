@@ -58,12 +58,50 @@ See the full challenge specification for details.
 
 The repository is organized as follows:
 
-- `notebooks/` → end-to-end ML pipeline
-- `src/` → reusable code (features, models, evaluation)
-- `data/` → raw and processed datasets
-- `models/` → trained artifacts
-- `docs/` → original challenge description (EN + PT-BR)
-- `reports/` → analysis outputs and visualizations
+```text
+intent-aware-recommendation-system/
+│
+├── app/
+│
+├── data/
+│   ├── raw/
+│   │   └── elo7_recruitment_dataset.csv
+│   ├── interim/
+│   ├── processed/
+│   └── external/
+│
+├── docs/
+│   ├── elo7-ds-challenge-pt.md
+│   └── elo7-ds-challenge-en.md
+│
+├── models/
+│
+├── notebooks/
+│   ├── README.md
+│   ├── 01_exploratory_data_analysis.ipynb
+│   ├── 02_product_classification.ipynb
+│   ├── 03_search_intent_modeling.ipynb
+│   ├── 04_recommendation_engine.ipynb
+│   ├── 05_system_integration.ipynb
+│   └── 06_evaluation.ipynb
+│
+├── reports/
+│
+├── src/
+│   ├── data/
+│   ├── features/
+│   ├── models/
+│   ├── evaluation/
+│   └── utils/
+│
+├── _quarto.yml
+├── index.qmd
+│
+├── README.md
+├── requirements.txt
+├── LICENSE
+└── TODO.md
+```
 
 ---
 

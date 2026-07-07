@@ -50,7 +50,7 @@ intent-aware-recommendation-system/
 │
 ├── notebooks/
 │   ├── README.md
-│   ├── 01_eda.ipynb
+│   ├── 01_exploratory_data_analysis.ipynb
 │   ├── 02_product_classification.ipynb
 │   ├── 03_search_intent_modeling.ipynb
 │   ├── 04_recommendation_engine.ipynb
