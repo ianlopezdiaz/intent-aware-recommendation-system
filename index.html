@@ -264,8 +264,8 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-notebooks">    
         <li>
-    <a class="dropdown-item" href="./notebooks/01_eda.html">
- <span class="dropdown-text">01 - EDA</span></a>
+    <a class="dropdown-item" href="./notebooks/01_exploratory_data_analysis.html">
+ <span class="dropdown-text">01 - Exploratory Data Analysis (EDA)</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./notebooks/02_product_classification.html">
@@ -413,14 +413,48 @@ ul.task-list li input[type="checkbox"] {
 <section id="project-structure" class="level2">
 <h2 class="anchored" data-anchor-id="project-structure">Project Structure</h2>
 <p>The repository is organized as follows:</p>
-<ul>
-<li><code>notebooks/</code> → end-to-end ML pipeline</li>
-<li><code>src/</code> → reusable code (features, models, evaluation)</li>
-<li><code>data/</code> → raw and processed datasets</li>
-<li><code>models/</code> → trained artifacts</li>
-<li><code>docs/</code> → original challenge description (EN + PT-BR)</li>
-<li><code>reports/</code> → analysis outputs and visualizations</li>
-</ul>
+<pre class="text"><code>intent-aware-recommendation-system/
+│
+├── app/
+│
+├── data/
+│   ├── raw/
+│   │   └── elo7_recruitment_dataset.csv
+│   ├── interim/
+│   ├── processed/
+│   └── external/
+│
+├── docs/
+│   ├── elo7-ds-challenge-pt.md
+│   └── elo7-ds-challenge-en.md
+│
+├── models/
+│
+├── notebooks/
+│   ├── README.md
+│   ├── 01_exploratory_data_analysis.ipynb
+│   ├── 02_product_classification.ipynb
+│   ├── 03_search_intent_modeling.ipynb
+│   ├── 04_recommendation_engine.ipynb
+│   ├── 05_system_integration.ipynb
+│   └── 06_evaluation.ipynb
+│
+├── reports/
+│
+├── src/
+│   ├── data/
+│   ├── features/
+│   ├── models/
+│   ├── evaluation/
+│   └── utils/
+│
+├── _quarto.yml
+├── index.qmd
+│
+├── README.md
+├── requirements.txt
+├── LICENSE
+└── TODO.md</code></pre>
 <hr>
 </section>
 <section id="status" class="level2">
