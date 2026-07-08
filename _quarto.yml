@@ -24,12 +24,13 @@ website:
             text: "05 - System Integration"
           - href: notebooks/06_evaluation.ipynb
             text: "06 - Evaluation"
+      - text: Challenge
+        menu:
+          - href: docs/elo7-ds-challenge-pt.md
+            text: Original (Brazilian Portuguese)
+          - href: docs/elo7-ds-challenge-en.md
+            text: English Translation
 
-      - href: docs/elo7-ds-challenge-en.md
-        text: Challenge
-
-      - href: docs/elo7-ds-challenge-pt.md
-        text: PT-BR
     right:
       - text: Portfolio
         href: https://ianlopezdiaz.github.io/portfolio
