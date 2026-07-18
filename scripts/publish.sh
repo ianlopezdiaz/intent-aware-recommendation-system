@@ -10,4 +10,4 @@ echo "Executing notebooks..."
 jupyter nbconvert --to notebook --execute --inplace notebooks/*.ipynb
 
 echo "Publishing to GitHub Pages..."
-quarto publish gh-pages --no-browser -y
+quarto publish gh-pages --no-browser --no-prompt
