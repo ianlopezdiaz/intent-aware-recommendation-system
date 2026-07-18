@@ -51,6 +51,16 @@ dist/
 *.egg-info/
 
 # =========================
+# Models & artifacts
+# =========================
+
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.onnx
+
+# =========================
 # Operating Systems
 # =========================
 
@@ -59,3 +69,11 @@ Thumbs.db
 
 /.quarto/
 **/*.quarto_ipynb
+
+# =========================
+# Quarto rendered site
+# =========================
+# Published via `quarto publish gh-pages`, which pushes rendered
+# output to the gh-pages branch directly — no need to track it here.
+
+/_site/
