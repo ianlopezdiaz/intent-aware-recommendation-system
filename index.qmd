@@ -54,6 +54,14 @@ See the full challenge specification for details.
 
 ---
 
+## Project Origin
+
+This project is based on a technical challenge I was given during a Data Scientist recruitment process at **Elo7** in 2021. That process didn't lead to an offer, and my [original submission](https://github.com/ianlopezdiaz/ELO7-recruitment-test) was left unfinished.
+
+The problem stuck with me, so I picked it back up as an independent project — this repository is a from-scratch implementation, not a continuation of that submission. The original challenge description is included in the repository for context.
+
+---
+
 ## Project Structure
 
 The repository is organized as follows:
@@ -64,8 +72,11 @@ intent-aware-recommendation-system/
 ├── README.md                                   # Project overview and usage instructions.
 ├── index.qmd                                   # Landing page for the Quarto website.
 ├── _quarto.yml                                 # Quarto website configuration.
-├── requirements.txt                            # Python dependencies.
+├── pyproject.toml                              # Project metadata and Python dependencies.
 ├── LICENSE                                     # Project license.
+│
+├── .github/
+│   └── workflows/                              # CI (lint + notebook execution) and site publishing.
 │
 ├── app/                                        # Application entry points and deployment code.
 │

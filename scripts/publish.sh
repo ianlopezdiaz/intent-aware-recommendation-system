@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Execute all notebooks in place, then render and publish the Quarto site
-# to the gh-pages branch. Run this after any notebook edit that should be
-# reflected on the published site.
+# to the gh-pages branch. Push to main triggers this automatically via
+# .github/workflows/publish.yml — run this manually only for an out-of-band
+# publish (e.g. republishing without a new commit).
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."

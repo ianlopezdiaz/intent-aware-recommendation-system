@@ -1,0 +1,35 @@
+[project]
+name = "intent-aware-recommendation-system"
+version = "0.1.0"
+description = "Intent-aware product recommendation: search intent modeling, product classification, and a hybrid recommender."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+dependencies = [
+    "pandas>=2.3",
+    "numpy>=2.3",
+]
+
+[project.optional-dependencies]
+notebook = [
+    "jupyter>=1.1",
+    "nbconvert>=7.16",
+    "ipykernel>=6.30",
+]
+dev = [
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
