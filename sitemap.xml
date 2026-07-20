@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/docs/elo7-ds-challenge-pt.html</loc>
+    <lastmod>2026-07-20T15:51:31.550Z</lastmod>
+  </url>
+  <url>
     <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/index.html</loc>
-    <lastmod>2026-07-08T00:26:44.016Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/docs/elo7-ds-challenge-en.html</loc>
-    <lastmod>2026-07-05T18:48:03.365Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/notebooks/02_product_classification.html</loc>
-    <lastmod>2026-07-18T12:45:03.711Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/notebooks/05_system_integration.html</loc>
-    <lastmod>2026-07-18T12:45:07.068Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/notebooks/04_recommendation_engine.html</loc>
-    <lastmod>2026-07-18T12:45:05.889Z</lastmod>
-  </url>
-  <url>
-    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/notebooks/01_exploratory_data_analysis.html</loc>
-    <lastmod>2026-07-18T12:45:02.622Z</lastmod>
+    <lastmod>2026-07-20T15:51:31.550Z</lastmod>
   </url>
   <url>
     <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/notebooks/03_search_intent_modeling.html</loc>
-    <lastmod>2026-07-18T12:45:04.783Z</lastmod>
+    <lastmod>2026-07-20T15:51:31.551Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/notebooks/05_system_integration.html</loc>
+    <lastmod>2026-07-20T15:51:31.551Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/notebooks/01_exploratory_data_analysis.html</loc>
+    <lastmod>2026-07-20T15:51:31.550Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/notebooks/04_recommendation_engine.html</loc>
+    <lastmod>2026-07-20T15:51:31.551Z</lastmod>
   </url>
   <url>
     <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/notebooks/06_evaluation.html</loc>
-    <lastmod>2026-07-18T12:45:08.132Z</lastmod>
+    <lastmod>2026-07-20T15:51:31.551Z</lastmod>
   </url>
   <url>
-    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/docs/elo7-ds-challenge-pt.html</loc>
-    <lastmod>2026-07-05T18:48:03.366Z</lastmod>
+    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/notebooks/02_product_classification.html</loc>
+    <lastmod>2026-07-20T15:51:31.551Z</lastmod>
+  </url>
+  <url>
+    <loc>https://ianlopezdiaz.github.io/intent-aware-recommendation-system/docs/elo7-ds-challenge-en.html</loc>
+    <lastmod>2026-07-20T15:51:31.549Z</lastmod>
   </url>
 </urlset>
