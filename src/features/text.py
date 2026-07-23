@@ -217,3 +217,29 @@ def char_length(text: str | float) -> int:
         Length, in characters, of the cleaned text.
     """
     return len(clean_text(text))
+
+
+def joined_tokens(*texts: str | float, drop_stopwords: bool = True) -> str:
+    """Tokenize one or more text fields and join them into one string.
+
+    Meant for combining several text columns of the same record (e.g. a
+    product's `title` and `concatenated_tags`) into a single field for a
+    downstream vectorizer such as `TfidfVectorizer`, which expects one
+    string per document rather than a list of tokens.
+
+    Parameters
+    ----------
+    *texts : str or float
+        Raw text fields to tokenize and combine, in order; see `clean_text`.
+    drop_stopwords : bool, default True
+        Passed through to `tokenize`. Defaults to True here (unlike
+        `tokenize` itself), since this function's output is meant for
+        vectorization, not for word-count/length features.
+
+    Returns
+    -------
+    str
+        All tokens from every field, space-separated, in order.
+    """
+    tokens = [t for text in texts for t in tokenize(text, drop_stopwords=drop_stopwords)]
+    return " ".join(tokens)
