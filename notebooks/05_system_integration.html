@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>system_integration – Intent-Aware Recommendation System</title>
+<title>System Integration – Intent-Aware Recommendation System</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,10 +23,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -43,8 +78,8 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-6b6957c917596b414ec0b78690761e87.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3029e7e195d8e149f4708ed6e6ea6f46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-45530282dfcbb60aa45e6cc5bdc99add.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-8262f2511af8a51d287c26da9595b204.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-198293974897f3d9a3d0b581c8f06b26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,6 +107,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -326,18 +364,514 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-task" id="toc-the-task" class="nav-link active" data-scroll-target="#the-task">The task</a></li>
+  <li><a href="#the-one-open-technical-problem" id="toc-the-one-open-technical-problem" class="nav-link" data-scroll-target="#the-one-open-technical-problem">The one open technical problem</a></li>
+  <li><a href="#questions-this-notebook-answers" id="toc-questions-this-notebook-answers" class="nav-link" data-scroll-target="#questions-this-notebook-answers">Questions this notebook answers</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">1. Setup</a></li>
+  <li><a href="#the-query---category-problem" id="toc-the-query---category-problem" class="nav-link" data-scroll-target="#the-query---category-problem">2. The query -&gt; category problem</a></li>
+  <li><a href="#building-the-end-to-end-pipeline" id="toc-building-the-end-to-end-pipeline" class="nav-link" data-scroll-target="#building-the-end-to-end-pipeline">3. Building the end-to-end pipeline</a></li>
+  <li><a href="#testing-with-unseen-queries" id="toc-testing-with-unseen-queries" class="nav-link" data-scroll-target="#testing-with-unseen-queries">4. Testing with unseen queries</a></li>
+  <li><a href="#the-command-line-delivery-script" id="toc-the-command-line-delivery-script" class="nav-link" data-scroll-target="#the-command-line-delivery-script">5. The command-line delivery script</a></li>
+  <li><a href="#key-findings-handoff" id="toc-key-findings-handoff" class="nav-link" data-scroll-target="#key-findings-handoff">6. Key findings &amp; handoff</a></li>
+  <li><a href="#closing-remarks" id="toc-closing-remarks" class="nav-link" data-scroll-target="#closing-remarks">Closing remarks</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">System Integration</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<p>This is the fifth notebook in the Elo7 Data Science Challenge project (full problem statement: <a href="../docs/elo7-ds-challenge-en.html"><code>../docs/elo7-ds-challenge-en.md</code></a>; notebooks 01-04 build the EDA, product classifier, intent classifier, and recommender this notebook assembles).</p>
+<section id="the-task" class="level2">
+<h2 class="anchored" data-anchor-id="the-task">The task</h2>
+<p>Two things, both due here:</p>
+<ul>
+<li><strong>Part 5 (System Integration)</strong>: a single system that takes an arbitrary search query and returns three outputs: the predicted product category (as if the query were a product), the predicted intent, and the ten most relevant recommended products.</li>
+<li><strong>Part 6 (Delivery)</strong>: a command-line script exposing the whole solution, with three modes: <code>--category</code> (classify a real product’s features), <code>--intent</code> (classify a query), and <code>--recommendation</code> (the full Part 5 system).</li>
+</ul>
+</section>
+<section id="the-one-open-technical-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-one-open-technical-problem">The one open technical problem</h2>
+<p>Notebook 02’s product classifier needs text <strong>and</strong> four numeric features. A bare search query has no price, no weight, no minimum quantity, nothing but text. Notebook 02 deliberately left this problem for here: “no numerical features are available; you should explore how to handle this limitation,” per the spec.</p>
+<p>Two ways to handle it, compared directly in §2 rather than assumed:</p>
+<ol type="1">
+<li>Fit a <strong>dedicated text-only classifier</strong>, reusing the same TF-IDF vector space already shared across notebooks 02 and 04.</li>
+<li>Reuse the existing text+numeric pipeline, but <strong>impute the missing numeric features with their training-set median</strong> at inference time.</li>
+</ol>
+</section>
+<section id="questions-this-notebook-answers" class="level2">
+<h2 class="anchored" data-anchor-id="questions-this-notebook-answers">Questions this notebook answers</h2>
+<ol type="1">
+<li><strong>Query -&gt; category</strong>: which of the two approaches above actually works better, and why?</li>
+<li><strong>The pipeline</strong>: how do the three subsystems (category, intent, recommendation) combine into one function?</li>
+<li><strong>Generalization</strong>: does the finished system actually work on queries that were never in the dataset at all?</li>
+<li><strong>Delivery</strong>: does the command-line script work exactly as specified, as a real subprocess, not just as Python function calls?</li>
+</ol>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">1. Setup</h2>
+<p>We reload every artifact notebooks 02-04 already produced: the product classifier (for its fitted TF-IDF vectorizer, reused again here), the intent classifier, and the deduplicated product catalog needed to rebuild the recommender’s vector space.</p>
+<div id="cce5511d" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:28.850466Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:28.849979Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:29.705722Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:29.705310Z&quot;}}" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ast</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> joblib</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> f1_score, accuracy_score</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.load <span class="im">import</span> load_processed_dataset</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.preprocess <span class="im">import</span> deduplicate_products</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.features.text <span class="im">import</span> joined_tokens</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.models.classifier <span class="im">import</span> NUMERIC_FEATURES, TEXT_FEATURE, build_pipeline, build_query_category_pipeline</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.models.recommender <span class="im">import</span> build_catalog</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.pipeline <span class="im">import</span> run_pipeline</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>RANDOM_STATE <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_processed_dataset(<span class="st">"01_data.parquet"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>products <span class="op">=</span> deduplicate_products(df)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>products[TEXT_FEATURE] <span class="op">=</span> [</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    joined_tokens(t, tg) <span class="cf">for</span> t, tg <span class="kw">in</span> <span class="bu">zip</span>(products[<span class="st">"title"</span>], products[<span class="st">"concatenated_tags"</span>])</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>classifier_pipeline <span class="op">=</span> joblib.load(<span class="st">"../models/02_product_classifier.joblib"</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>tfidf <span class="op">=</span> classifier_pipeline.named_steps[<span class="st">"preprocess"</span>].named_transformers_[<span class="st">"text"</span>]</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>intent_pipeline <span class="op">=</span> joblib.load(<span class="st">"../models/03_intent_classifier.joblib"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(products)<span class="sc">:,}</span><span class="ss"> products loaded"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>29,778 products loaded</code></pre>
+</div>
+</div>
+</section>
+<section id="the-query---category-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-query---category-problem">2. The query -&gt; category problem</h2>
+<p>We reproduce notebook 02’s exact train/test split (<code>test_size=0.25</code>, stratified, <code>random_state=42</code>) so the comparison below is apples to apples with what notebook 02 already reported, and refit a fresh copy of the full pipeline (not the artifact notebook 02 saved, which was already refit on the entire catalog and would leak test rows into this evaluation).</p>
+<div id="ba664f3b" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:29.706899Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:29.706762Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:30.225691Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:30.225476Z&quot;}}" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    products, test_size<span class="op">=</span><span class="fl">0.25</span>, stratify<span class="op">=</span>products[<span class="st">"category"</span>], random_state<span class="op">=</span>RANDOM_STATE</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>full_pipeline_fresh <span class="op">=</span> build_pipeline()</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>full_pipeline_fresh.fit(train[[TEXT_FEATURE, <span class="op">*</span>NUMERIC_FEATURES]], train[<span class="st">"category"</span>])</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>pred_real_numeric <span class="op">=</span> full_pipeline_fresh.predict(test[[TEXT_FEATURE, <span class="op">*</span>NUMERIC_FEATURES]])</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"reference (text + real numeric features): macro-F1 = </span><span class="sc">{</span>f1_score(test[<span class="st">'category'</span>], pred_real_numeric, average<span class="op">=</span><span class="st">'macro'</span>)<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>reference (text + real numeric features): macro-F1 = 0.849</code></pre>
+</div>
+</div>
+<p>That matches notebook 02’s reported 0.849, confirming this split reproduces cleanly. Now the two candidates for query time, when no numeric features exist at all:</p>
+<div id="aac7d06e" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:30.226618Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:30.226534Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:30.560865Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:30.560586Z&quot;}}" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Approach 1: dedicated text-only classifier.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>text_only_pipeline <span class="op">=</span> build_query_category_pipeline()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>text_only_pipeline.fit(train[TEXT_FEATURE], train[<span class="st">"category"</span>])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>pred_text_only <span class="op">=</span> text_only_pipeline.predict(test[TEXT_FEATURE])</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Approach 2: full pipeline, numeric features imputed with the training median.</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>median_values <span class="op">=</span> train[NUMERIC_FEATURES].median()</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>test_imputed <span class="op">=</span> test.copy()</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> column <span class="kw">in</span> NUMERIC_FEATURES:</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    test_imputed[column] <span class="op">=</span> median_values[column]</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>pred_imputed <span class="op">=</span> full_pipeline_fresh.predict(test_imputed[[TEXT_FEATURE, <span class="op">*</span>NUMERIC_FEATURES]])</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>comparison <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"text-only classifier"</span>: {</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">"macro_f1"</span>: f1_score(test[<span class="st">"category"</span>], pred_text_only, average<span class="op">=</span><span class="st">"macro"</span>),</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">"accuracy"</span>: accuracy_score(test[<span class="st">"category"</span>], pred_text_only),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"full pipeline, median-imputed numeric"</span>: {</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>            <span class="st">"macro_f1"</span>: f1_score(test[<span class="st">"category"</span>], pred_imputed, average<span class="op">=</span><span class="st">"macro"</span>),</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>            <span class="st">"accuracy"</span>: accuracy_score(test[<span class="st">"category"</span>], pred_imputed),</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>        },</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>).T</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>comparison[<span class="st">"agreement_with_other_approach"</span>] <span class="op">=</span> (pred_text_only <span class="op">==</span> pred_imputed).mean()</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>comparison</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">macro_f1</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">agreement_with_other_approach</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">text-only classifier</th>
+<td>0.843058</td>
+<td>0.875756</td>
+<td>0.987374</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">full pipeline, median-imputed numeric</th>
+<td>0.841582</td>
+<td>0.874009</td>
+<td>0.987374</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Essentially identical, within noise of each other, and the two approaches agree on 98.7% of individual predictions. That’s not a coincidence: imputing every query with the <em>same constant</em> numeric values contributes no discriminative signal at all (every example gets an identical value for <code>price</code>, <code>weight</code>, and so on), so it’s mathematically close to just dropping the features, only with extra code and the conceptual awkwardness of pretending a query has a price. <strong>We use the dedicated text-only classifier</strong> (<code>src.models.classifier.build_query_category_pipeline</code>): simpler, equally accurate, and honest about what information is actually available at query time. It costs 0.006 macro-F1 against the text+real-numeric upper bound, a small, explained price for not fabricating numbers.</p>
+<p>Refit on the full catalog before saving, matching the convention notebooks 02-03 already established.</p>
+<div id="f6ddb6ce" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:30.561746Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:30.561655Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:30.914082Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:30.913228Z&quot;}}" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>query_category_pipeline <span class="op">=</span> build_query_category_pipeline()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>query_category_pipeline.fit(products[TEXT_FEATURE], products[<span class="st">"category"</span>])</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Saved now, not deferred to the closing section: app/cli.py's --recommendation mode</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># (demonstrated live in §5) loads this artifact and needs it to already exist on disk.</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>joblib.dump(query_category_pipeline, <span class="st">"../models/05_query_category_classifier.joblib"</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> query <span class="kw">in</span> [<span class="st">"anel de prata"</span>, <span class="st">"tapete de croche"</span>, <span class="st">"dia dos pais"</span>]:</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    pred <span class="op">=</span> query_category_pipeline.predict([joined_tokens(query)])[<span class="dv">0</span>]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>query<span class="sc">!r:30s}</span><span class="ss"> -&gt; </span><span class="sc">{</span>pred<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>'anel de prata'                -&gt; Bijuterias e Jóias
+'tapete de croche'             -&gt; Decoração
+'dia dos pais'                 -&gt; Lembrancinhas</code></pre>
+</div>
+</div>
+</section>
+<section id="building-the-end-to-end-pipeline" class="level2">
+<h2 class="anchored" data-anchor-id="building-the-end-to-end-pipeline">3. Building the end-to-end pipeline</h2>
+<p><code>src.pipeline.run_pipeline</code> ties the three subsystems together: the text-only category classifier from §2, notebook 03’s intent classifier, and notebook 04’s hybrid recommender, which already reuses the intent classifier internally to decide whether to diversify results.</p>
+<div id="515ad500" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:30.916430Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:30.916205Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:31.039608Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:31.039319Z&quot;}}" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>catalog <span class="op">=</span> build_catalog(products, tfidf)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> run_pipeline(<span class="st">"anel de prata"</span>, query_category_pipeline, intent_pipeline, catalog, k<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"category:"</span>, result.category)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"intent:"</span>, result.intent)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>result.recommendations[[<span class="st">"product_id"</span>, <span class="st">"title"</span>, <span class="st">"category"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>category: Bijuterias e Jóias
+intent: specific</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">product_id</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">category</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>14308022</td>
+<td>Anel Claddagh em Prata</td>
+<td>Bijuterias e Jóias</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>12722782</td>
+<td>Anel Trançado em Prata</td>
+<td>Bijuterias e Jóias</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>235944</td>
+<td>Anel em prata maleável</td>
+<td>Bijuterias e Jóias</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>10202276</td>
+<td>Anel de Prata Letras - Anel de Prata Feminino ...</td>
+<td>Bijuterias e Jóias</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>10764366</td>
+<td>Anel 4 Safiras em PRATA 925 - FRETE GRÁTIS</td>
+<td>Bijuterias e Jóias</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>7766241</td>
+<td>Anel de Prata De Letra Dupla - Prata 950 Anel ...</td>
+<td>Bijuterias e Jóias</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>1064039</td>
+<td>Anel em Prata de Coração</td>
+<td>Bijuterias e Jóias</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>7815481</td>
+<td>Anel Solitário de Prata 925 com Ródio</td>
+<td>Bijuterias e Jóias</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>7865498</td>
+<td>Anel Prata Escrava</td>
+<td>Bijuterias e Jóias</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>16167852</td>
+<td>Aliança de prata</td>
+<td>Bijuterias e Jóias</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>All three outputs Part 5 asks for, from one query, one function call. A second example, a broader query, to see the intent-aware diversification from notebook 04 show up inside the full pipeline rather than in isolation:</p>
+<div id="b90234d1" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:31.040764Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:31.040676Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:31.047444Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:31.047264Z&quot;}}" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>result2 <span class="op">=</span> run_pipeline(<span class="st">"dia dos pais"</span>, query_category_pipeline, intent_pipeline, catalog, k<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"category:"</span>, result2.category)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"intent:"</span>, result2.intent)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>result2.recommendations[<span class="st">"category"</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>category: Lembrancinhas
+intent: exploratory</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>category
+Lembrancinhas    2
+Outros           2
+Papel e Cia      2
+Decoração        2
+Bebê             2
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+</section>
+<section id="testing-with-unseen-queries" class="level2">
+<h2 class="anchored" data-anchor-id="testing-with-unseen-queries">4. Testing with unseen queries</h2>
+<p>Every evaluation in notebooks 02-04 ultimately replayed historical data in some form: held-out rows of the same dataset, or clicks that already happened. Part 5’s actual requirement is broader: <strong>any</strong> query, including ones this dataset has never seen. We test with genuinely novel phrasings, invented for this notebook, not lightly-reworded historical queries.</p>
+<div id="7c06ab75" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:31.048580Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:31.048502Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:31.073358Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:31.073097Z&quot;}}" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>unseen_queries <span class="op">=</span> [</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"presente de aniversario para amiga"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"colar masculino aco inoxidavel"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"kit maternidade completo enxoval"</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"convite digital formatura"</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> query <span class="kw">in</span> unseen_queries:</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    in_dataset <span class="op">=</span> query <span class="kw">in</span> <span class="bu">set</span>(df[<span class="st">"query"</span>])</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> run_pipeline(query, query_category_pipeline, intent_pipeline, catalog, k<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">'</span><span class="sc">{</span>query<span class="sc">}</span><span class="ss">'  (seen historically: </span><span class="sc">{</span>in_dataset<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  category: </span><span class="sc">{</span>result<span class="sc">.</span>category<span class="sc">}</span><span class="ss">   intent: </span><span class="sc">{</span>result<span class="sc">.</span>intent<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(result.recommendations[[<span class="st">"title"</span>, <span class="st">"category"</span>]].to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+'presente de aniversario para amiga'  (seen historically: False)
+  category: Lembrancinhas   intent: exploratory
+                                                 title      category
+                                        ALMOFADA AMIGA     Decoração
+Presente amiga minha alegria personalizado c/ sua foto Lembrancinhas
+                                   Caixa para presente   Papel e Cia
+                     Caixa para Presente Personalizada Lembrancinhas
+                                      Presente 15 anos     Decoração
+
+'colar masculino aco inoxidavel'  (seen historically: False)
+  category: Bijuterias e Jóias   intent: specific
+                                                      title           category
+   Anel masculino aço inoxidável 316l carbono preto e prata Bijuterias e Jóias
+                                    Colar Masculino Mandala Bijuterias e Jóias
+       Colar masculino palheta guitarra placa personalizada Bijuterias e Jóias
+Colar Aromatizador - Difusor Pessoal pequeno Aço inoxidável Bijuterias e Jóias
+                                             Colar Caterpie Bijuterias e Jóias
+
+'kit maternidade completo enxoval'  (seen historically: False)
+  category: Bebê   intent: specific
+                                             title category
+Kit Bolsa Maternidade masculino 5 peças - completo     Bebê
+       Kit Berço Menino - 314 Mínimo *Frete Grátis     Bebê
+                         lembrancinhas maternidade     Bebê
+           Saída Maternidade Kit Completo Vermelho     Bebê
+               Enxoval completo Mateus bege 27 pçs     Bebê
+
+'convite digital formatura'  (seen historically: False)
+  category: Papel e Cia   intent: exploratory
+                        title      category
+    Convite Digital - Anos 80   Papel e Cia
+            Convite Formatura   Papel e Cia
+      Convite Digital Noivado Lembrancinhas
+convite digital chá de Panela          Bebê
+       Convite Digital Crisma Lembrancinhas</code></pre>
+</div>
+</div>
+<p>None of these four exact strings appear anywhere in the historical dataset, and every one produces a plausible category, a plausible intent, and recommendations that visibly relate to what was asked, direct evidence the system generalizes rather than only memorizing patterns from queries it was indirectly trained to recognize.</p>
+</section>
+<section id="the-command-line-delivery-script" class="level2">
+<h2 class="anchored" data-anchor-id="the-command-line-delivery-script">5. The command-line delivery script</h2>
+<p><code>app/cli.py</code> implements the Part 6 contract: <code>--category</code> (a real product’s features, the ordinary Part 2 problem), <code>--intent</code> (a query), and <code>--recommendation</code> (the full pipeline from §3-4). We run it as an actual subprocess for each mode, the real, literal delivery format the spec asks for, not just a call into the underlying Python functions.</p>
+<div id="97a11d22" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:31.074628Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:31.074551Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:31.076099Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:31.075933Z&quot;}}" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> run_cli(<span class="op">*</span>args):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> subprocess.run(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        [sys.executable, <span class="st">"../app/cli.py"</span>, <span class="op">*</span>args],</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>        capture_output<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        text<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        cwd<span class="op">=</span>Path.cwd(),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> result.returncode <span class="op">!=</span> <span class="dv">0</span>:</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"STDERR:"</span>, result.stderr)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result.stdout.strip()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><strong><code>--category</code></strong>, a real product description:</p>
+<div id="841a7a28" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:31.077251Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:31.077175Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:31.705503Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:31.705276Z&quot;}}" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"title"</span>: <span class="st">"Anel de Prata Feminino"</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"concatenated_tags"</span>: <span class="st">"anel prata feminino joia"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"price"</span>: <span class="fl">49.9</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"minimum_quantity"</span>: <span class="dv">1</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"weight"</span>: <span class="dv">5</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(run_cli(<span class="st">"--category"</span>, <span class="bu">str</span>(features)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bijuterias e Jóias</code></pre>
+</div>
+</div>
+<p><strong><code>--intent</code></strong>, a bare query:</p>
+<div id="2310a905" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:31.706623Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:31.706536Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:32.352641Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:32.352377Z&quot;}}" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(run_cli(<span class="st">"--intent"</span>, <span class="st">"dia dos pais"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>exploratory</code></pre>
+</div>
+</div>
+<p><strong><code>--recommendation</code></strong>, the full hybrid system, exactly the spec’s three-part output format (category, then intent, then ten <code>product_id,title</code> lines):</p>
+<div id="9962924f" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:32.354089Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:32.353998Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:33.401817Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:33.401552Z&quot;}}" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(run_cli(<span class="st">"--recommendation"</span>, <span class="st">"anel de prata"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bijuterias e Jóias
+specific
+14308022,Anel Claddagh em Prata
+12722782,Anel Trançado em Prata
+235944,Anel em prata maleável
+10202276,Anel de Prata Letras - Anel de Prata Feminino Letra L
+10764366,Anel 4 Safiras em PRATA 925 - FRETE GRÁTIS
+7766241,Anel de Prata De Letra Dupla - Prata 950 Anel Feminino
+1064039,Anel em Prata de Coração
+7815481,Anel Solitário de Prata 925 com Ródio
+7865498,Anel Prata Escrava
+16167852,Aliança de prata</code></pre>
+</div>
+</div>
+<p>All three modes run as genuinely separate processes, invoking the delivered script exactly as a grader would, and produce output in the format the spec lays out.</p>
+</section>
+<section id="key-findings-handoff" class="level2">
+<h2 class="anchored" data-anchor-id="key-findings-handoff">6. Key findings &amp; handoff</h2>
+<p><strong>The query -&gt; category problem, resolved</strong>: a dedicated text-only classifier, reusing the shared TF-IDF vector space from notebooks 02 and 04, performs statistically indistinguishably from imputing numeric features with their training median (macro-F1 0.843 vs.&nbsp;0.842, 98.7% prediction agreement), for a clear reason: a constant imputed value carries no discriminative signal. The simpler, more honest option was kept.</p>
+<p><strong>What was built:</strong></p>
+<ul>
+<li><code>src/models/classifier.py</code>: <code>build_query_category_pipeline</code>, the text-only classifier from §2, persisted as <code>models/05_query_category_classifier.joblib</code>.</li>
+<li><code>src/pipeline.py</code>: <code>run_pipeline</code>, the actual Part 5 hybrid system as importable code, so notebook 06 and <code>app/cli.py</code> both call the same function rather than duplicating logic.</li>
+<li><code>app/cli.py</code>: the Part 6 delivery script, all three modes demonstrated as real subprocesses in §5.</li>
+</ul>
+<p><strong>What we learned:</strong></p>
+<ul>
+<li>The query -&gt; category gap costs very little (0.006 macro-F1) once the right substitute is used; the naive “impute and reuse” approach costs almost exactly the same amount for a worse reason (fabricated numbers instead of an honest text-only model).</li>
+<li>The finished system generalizes to genuinely novel queries (§4), not just held-out rows of data it was adjacent to during training.</li>
+</ul>
+<p><strong>Handoff to notebook 06</strong>: formal evaluation of all three subsystems together, including this notebook’s query-category classifier as one more component to score, using the metrics established across notebooks 02-04 (macro-F1 for both classifiers, hit-rate/recall for the recommender) rather than inventing new ones.</p>
+<div id="64a89cc0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:11:33.403098Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:11:33.402988Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:11:33.417005Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:11:33.416609Z&quot;}}" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="op">=</span> Path(<span class="st">"../data/processed"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>feature_catalog <span class="op">=</span> [</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"query_category"</span>, <span class="st">"categorical"</span>, <span class="st">"engineered"</span>, <span class="st">"product_text (query)"</span>, <span class="st">"Predicted category for a query, via the text-only classifier."</span>),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"query_intent"</span>, <span class="st">"categorical"</span>, <span class="st">"engineered"</span>, <span class="st">"product_text (query)"</span>, <span class="st">"Predicted intent for a query, via notebook 03's classifier."</span>),</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>df_features <span class="op">=</span> pd.DataFrame(feature_catalog, columns<span class="op">=</span>[<span class="st">"Name"</span>, <span class="st">"Type"</span>, <span class="st">"Category"</span>, <span class="st">"Source"</span>, <span class="st">"Description"</span>])</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>df_features.to_parquet(data_dir <span class="op">/</span> <span class="st">"05_features.parquet"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"saved </span><span class="sc">{</span><span class="bu">len</span>(df_features)<span class="sc">}</span><span class="ss"> feature rows -&gt; data/processed/05_features.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>saved 2 feature rows -&gt; data/processed/05_features.parquet</code></pre>
+</div>
+</div>
+</section>
+<section id="closing-remarks" class="level2">
+<h2 class="anchored" data-anchor-id="closing-remarks">Closing remarks</h2>
+<p>This notebook closed the one gap left open since notebook 02: classifying a query as if it were a product, with no numeric features available, resolved with a dedicated text-only classifier rather than fabricated numeric inputs, at a small, explained cost. The three subsystems built across notebooks 02-04 now run as a single function (<code>src.pipeline.run_pipeline</code>) and a real command-line script (<code>app/cli.py</code>), both demonstrated on queries the dataset has never seen.</p>
+<p>The <a href="../notebooks/06_evaluation.html">next notebook</a> formally evaluates all three subsystems together.</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

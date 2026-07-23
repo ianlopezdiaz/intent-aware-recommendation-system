@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>evaluation – Intent-Aware Recommendation System</title>
+<title>Evaluation – Intent-Aware Recommendation System</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,10 +23,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -43,8 +78,8 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-6b6957c917596b414ec0b78690761e87.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3029e7e195d8e149f4708ed6e6ea6f46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-45530282dfcbb60aa45e6cc5bdc99add.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-8262f2511af8a51d287c26da9595b204.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-198293974897f3d9a3d0b581c8f06b26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,6 +107,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -326,18 +364,533 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-task" id="toc-the-task" class="nav-link active" data-scroll-target="#the-task">The task</a></li>
+  <li><a href="#questions-this-notebook-answers" id="toc-questions-this-notebook-answers" class="nav-link" data-scroll-target="#questions-this-notebook-answers">Questions this notebook answers</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">1. Setup</a></li>
+  <li><a href="#classification-metrics-part-2" id="toc-classification-metrics-part-2" class="nav-link" data-scroll-target="#classification-metrics-part-2">2. Classification metrics (Part 2)</a></li>
+  <li><a href="#intent-metrics-part-3-and-clustering-evaluation" id="toc-intent-metrics-part-3-and-clustering-evaluation" class="nav-link" data-scroll-target="#intent-metrics-part-3-and-clustering-evaluation">3. Intent metrics (Part 3) and clustering evaluation</a></li>
+  <li><a href="#recommendation-metrics-part-5-recommender-half" id="toc-recommendation-metrics-part-5-recommender-half" class="nav-link" data-scroll-target="#recommendation-metrics-part-5-recommender-half">4. Recommendation metrics (Part 5, recommender half)</a></li>
+  <li><a href="#cross-system-validation" id="toc-cross-system-validation" class="nav-link" data-scroll-target="#cross-system-validation">5. Cross-system validation</a></li>
+  <li><a href="#error-analysis" id="toc-error-analysis" class="nav-link" data-scroll-target="#error-analysis">6. Error analysis</a></li>
+  <li><a href="#future-work" id="toc-future-work" class="nav-link" data-scroll-target="#future-work">7. Future work</a></li>
+  <li><a href="#key-findings-handoff" id="toc-key-findings-handoff" class="nav-link" data-scroll-target="#key-findings-handoff">8. Key findings &amp; handoff</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Evaluation</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<p>This is the sixth and final notebook in the Elo7 Data Science Challenge project (full problem statement: <a href="../docs/elo7-ds-challenge-en.html"><code>../docs/elo7-ds-challenge-en.md</code></a>; notebooks 01-05 build the EDA, product classifier, intent classifier, recommender, and integrated system this notebook evaluates together).</p>
+<section id="the-task" class="level2">
+<h2 class="anchored" data-anchor-id="the-task">The task</h2>
+<p>The spec’s evaluation section asks for metrics for the product classifier and intent system, justified rather than optimized for. This project’s own scope is broader: five systems were built across notebooks 02-05, and each one already did real evaluation work as it went, macro-F1 justified against class imbalance, confusion matrices, dummy baselines, hit-rate and recall against historical clicks, an explicit tradeoff named and not hidden. Repeating all of that here would pad this notebook without adding anything.</p>
+<p>So this notebook does two things, kept clearly separate:</p>
+<ol type="1">
+<li><strong>Consolidate</strong>, briefly, what earlier notebooks already established and justified, with a pointer back to the notebook that did the original work rather than a re-run.</li>
+<li><strong>Fill three genuine gaps</strong> that nothing has covered yet: clustering validity for the intent split (evaluated so far only as a downstream classification problem), a quantified diversity metric for the recommender (notebook 04 showed the tradeoff on one example query, never measured it), and cross-system validation, checking notebook 05’s query-category classifier against real historical search behavior rather than only held-out product labels.</li>
+</ol>
+</section>
+<section id="questions-this-notebook-answers" class="level2">
+<h2 class="anchored" data-anchor-id="questions-this-notebook-answers">Questions this notebook answers</h2>
+<ol type="1">
+<li><strong>Classification</strong>: what’s the justified headline metric, and what do the actual misclassified products look like?</li>
+<li><strong>Intent and clustering</strong>: is the <code>specific</code>/<code>exploratory</code> split, evaluated as a clustering problem in its own right, actually well-separated?</li>
+<li><strong>Recommendation and diversity</strong>: how much diversity does the intent-aware hybrid actually buy, quantified rather than shown on one example?</li>
+<li><strong>Cross-system validation</strong>: does the query-category classifier predict what real searchers were actually looking for, and does that depend on the query’s intent?</li>
+<li><strong>What’s next</strong>: what would extend this project furthest, given everything found along the way?</li>
+</ol>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">1. Setup</h2>
+<div id="3899747f" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:31:38.664520Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:31:38.663981Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:31:39.803848Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:31:39.803460Z&quot;}}" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> joblib</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> silhouette_score</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.load <span class="im">import</span> load_processed_dataset</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.preprocess <span class="im">import</span> deduplicate_products</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.evaluation.metrics <span class="im">import</span> category_diversity, evaluate_recommender</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.features.text <span class="im">import</span> joined_tokens</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.models.classifier <span class="im">import</span> NUMERIC_FEATURES, TEXT_FEATURE, build_pipeline</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.models.intent <span class="im">import</span> MIN_CLICKS_FOR_DISCOVERY, TOP_SHARE_THRESHOLD, category_top_share</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.models.recommender <span class="im">import</span> build_catalog, recommend_content, recommend_hybrid</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>PRIMARY <span class="op">=</span> <span class="st">"#2a78d6"</span>  <span class="co"># Blue, the default single hue for magnitude comparisons.</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>SECONDARY <span class="op">=</span> <span class="st">"#eb6834"</span>  <span class="co"># Orange, the second series whenever a chart compares exactly two things.</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.dpi"</span>] <span class="op">=</span> <span class="dv">110</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"axes.spines.top"</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"axes.spines.right"</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>RANDOM_STATE <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_processed_dataset(<span class="st">"01_data.parquet"</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>products <span class="op">=</span> deduplicate_products(df)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>products[TEXT_FEATURE] <span class="op">=</span> [</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    joined_tokens(t, tg) <span class="cf">for</span> t, tg <span class="kw">in</span> <span class="bu">zip</span>(products[<span class="st">"title"</span>], products[<span class="st">"concatenated_tags"</span>])</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>classifier_pipeline <span class="op">=</span> joblib.load(<span class="st">"../models/02_product_classifier.joblib"</span>)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>tfidf <span class="op">=</span> classifier_pipeline.named_steps[<span class="st">"preprocess"</span>].named_transformers_[<span class="st">"text"</span>]</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>intent_pipeline <span class="op">=</span> joblib.load(<span class="st">"../models/03_intent_classifier.joblib"</span>)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>query_category_pipeline <span class="op">=</span> joblib.load(<span class="st">"../models/05_query_category_classifier.joblib"</span>)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>catalog <span class="op">=</span> build_catalog(products, tfidf)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(products)<span class="sc">:,}</span><span class="ss"> products, </span><span class="sc">{</span>df[<span class="st">'query'</span>]<span class="sc">.</span>nunique()<span class="sc">:,}</span><span class="ss"> distinct queries loaded"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>29,778 products, 6,392 distinct queries loaded</code></pre>
+</div>
+</div>
+</section>
+<section id="classification-metrics-part-2" class="level2">
+<h2 class="anchored" data-anchor-id="classification-metrics-part-2">2. Classification metrics (Part 2)</h2>
+<p><strong>Recap</strong> (full detail: notebook 02): macro-F1, not accuracy, is the headline metric, because <code>category</code> is imbalanced roughly 15:1 even at the product level, and accuracy alone would be dominated by the majority class. The final pipeline (TF-IDF product text + four numeric features, <code>LinearSVC</code>) reaches macro-F1 0.85 / accuracy 0.88 on held-out products, against a numeric-only baseline of macro-F1 0.40. <code>Outros</code> and <code>Papel e Cia</code> are the two hardest categories.</p>
+<p><strong>New here</strong>: notebook 02’s confusion matrix showed <em>counts</em> of <code>Papel e Cia</code>/<code>Lembrancinhas</code> confusion. What do the actual misclassified products look like?</p>
+<div id="b1dfe7d0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:31:39.804897Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:31:39.804742Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:31:40.337634Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:31:40.337311Z&quot;}}" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    products, test_size<span class="op">=</span><span class="fl">0.25</span>, stratify<span class="op">=</span>products[<span class="st">"category"</span>], random_state<span class="op">=</span>RANDOM_STATE</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>eval_pipeline <span class="op">=</span> build_pipeline()</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>eval_pipeline.fit(train[[TEXT_FEATURE, <span class="op">*</span>NUMERIC_FEATURES]], train[<span class="st">"category"</span>])</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> test.copy()</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>test[<span class="st">"predicted_category"</span>] <span class="op">=</span> eval_pipeline.predict(test[[TEXT_FEATURE, <span class="op">*</span>NUMERIC_FEATURES]])</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>papel_as_lembrancinhas <span class="op">=</span> test[</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    (test[<span class="st">"category"</span>] <span class="op">==</span> <span class="st">"Papel e Cia"</span>) <span class="op">&amp;</span> (test[<span class="st">"predicted_category"</span>] <span class="op">==</span> <span class="st">"Lembrancinhas"</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>lembrancinhas_as_papel <span class="op">=</span> test[</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    (test[<span class="st">"category"</span>] <span class="op">==</span> <span class="st">"Lembrancinhas"</span>) <span class="op">&amp;</span> (test[<span class="st">"predicted_category"</span>] <span class="op">==</span> <span class="st">"Papel e Cia"</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Papel e Cia -&gt; predicted Lembrancinhas: </span><span class="sc">{</span><span class="bu">len</span>(papel_as_lembrancinhas)<span class="sc">}</span><span class="ss"> products"</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(papel_as_lembrancinhas[[<span class="st">"title"</span>, <span class="st">"category"</span>, <span class="st">"predicted_category"</span>]].head(<span class="dv">4</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Lembrancinhas -&gt; predicted Papel e Cia: </span><span class="sc">{</span><span class="bu">len</span>(lembrancinhas_as_papel)<span class="sc">}</span><span class="ss"> products"</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lembrancinhas_as_papel[[<span class="st">"title"</span>, <span class="st">"category"</span>, <span class="st">"predicted_category"</span>]].head(<span class="dv">4</span>).to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Papel e Cia -&gt; predicted Lembrancinhas: 139 products
+                       title    category predicted_category
+     Cadernos Personalizados Papel e Cia      Lembrancinhas
+Adesivo para Caixinha Barbie Papel e Cia      Lembrancinhas
+          Caixa dia dos pais Papel e Cia      Lembrancinhas
+       Lápis + Borracha LEGO Papel e Cia      Lembrancinhas
+
+Lembrancinhas -&gt; predicted Papel e Cia: 56 products
+                        title      category predicted_category
+Caixa para os Pais dos noivos Lembrancinhas        Papel e Cia
+       Convite Digital Crisma Lembrancinhas        Papel e Cia
+Etiquetas Personalizadas Água Lembrancinhas        Papel e Cia
+       Topo de bolo Minecraft Lembrancinhas        Papel e Cia</code></pre>
+</div>
+</div>
+<p>“Caixa dia dos pais” (a paper gift box) labeled <code>Papel e Cia</code> but predicted <code>Lembrancinhas</code>, and “Convite Digital Crisma” (a digital invitation) labeled <code>Lembrancinhas</code> but predicted <code>Papel e Cia</code>: these read as genuine category-boundary products, not model failures. A paper gift box and a party favor box are, reasonably, both things; an invitation is, reasonably, both a paper good and a party keepsake. No amount of additional tuning would resolve ambiguity that’s present in the sellers’ own category choices.</p>
+</section>
+<section id="intent-metrics-part-3-and-clustering-evaluation" class="level2">
+<h2 class="anchored" data-anchor-id="intent-metrics-part-3-and-clustering-evaluation">3. Intent metrics (Part 3) and clustering evaluation</h2>
+<p><strong>Recap</strong> (full detail: notebook 03): the <code>specific</code>/<code>exploratory</code> split, defined via <code>top_share</code> and validated at a 0.8 threshold against an independent <code>KMeans(k=2)</code> boundary (97% label agreement), generalizes to unseen queries via a text-only classifier at macro-F1 ~0.68, a real improvement over a ~0.42 dummy baseline but well below notebook 02’s product classifier, an honestly-stated ceiling, not a shortcoming glossed over.</p>
+<p><strong>New here</strong>: notebook 03 used <code>KMeans</code> only to <em>validate a threshold</em>. Scored as a clustering problem in its own right, using <code>silhouette_score</code>, how good is the split?</p>
+<div id="e8241b16" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:31:40.338476Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:31:40.338395Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:31:41.435079Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:31:41.434666Z&quot;}}" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>clicks_per_query <span class="op">=</span> df.groupby(<span class="st">"query"</span>).size()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>eligible <span class="op">=</span> clicks_per_query[clicks_per_query <span class="op">&gt;=</span> MIN_CLICKS_FOR_DISCOVERY].index</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>sub <span class="op">=</span> df[df[<span class="st">"query"</span>].isin(eligible)]</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>query_level <span class="op">=</span> sub.groupby(<span class="st">"query"</span>).agg(top_share<span class="op">=</span>(<span class="st">"category"</span>, category_top_share)).reset_index()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> query_level[[<span class="st">"top_share"</span>]].to_numpy()</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>manual_labels <span class="op">=</span> (query_level[<span class="st">"top_share"</span>] <span class="op">&gt;=</span> TOP_SHARE_THRESHOLD).astype(<span class="bu">int</span>).to_numpy()</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>silhouette_scores <span class="op">=</span> {}</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> (<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>):</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    km <span class="op">=</span> KMeans(n_clusters<span class="op">=</span>k, random_state<span class="op">=</span>RANDOM_STATE, n_init<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    labels_k <span class="op">=</span> km.fit_predict(X)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    silhouette_scores[k] <span class="op">=</span> silhouette_score(X, labels_k)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>pd.Series(silhouette_scores, name<span class="op">=</span><span class="st">"silhouette_score"</span>).rename_axis(<span class="st">"k"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>k
+2    0.786858
+3    0.792276
+4    0.811974
+5    0.822395
+Name: silhouette_score, dtype: float64</code></pre>
+</div>
+</div>
+<p>0.79 at <code>k=2</code>, a real, respectable score: the two clusters are genuinely well-separated, not an arbitrary split. But silhouette keeps <em>climbing</em> through <code>k=5</code> (0.82), which would naively suggest more clusters are better. They’re not, for this project’s purposes: <code>top_share</code>’s distribution has a dense spike exactly at 1.0 (notebook 03, §3), so additional clusters mostly carve small, trivially-separated slices off that spike rather than finding new structure that matters. Two classes remains the right choice for reasons that were always domain-driven (matching the spec’s own suggested framing, defensible label volume per class), not something a metric that keeps improving with more clusters should override, the exact distinction the spec draws between justifying a metric and chasing the best score.</p>
+</section>
+<section id="recommendation-metrics-part-5-recommender-half" class="level2">
+<h2 class="anchored" data-anchor-id="recommendation-metrics-part-5-recommender-half">4. Recommendation metrics (Part 5, recommender half)</h2>
+<p><strong>Recap</strong> (full detail: notebook 04): against historical clicks, content-based recommendations reach 86.0% hit-rate@10 / 0.417 recall@10, far above popularity (1.4% / 0.001) or random. The intent-aware hybrid trades some of that recall away for <code>exploratory</code> queries specifically (88.1% -&gt; 76.6% hit-rate) in exchange for category diversity, a tradeoff named but never measured on the diversity side.</p>
+<p><strong>New here</strong>: <code>src.evaluation.metrics.category_diversity</code>, applied to the same 500-query sample notebook 04 evaluated on.</p>
+<div id="296d4e62" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:31:41.436143Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:31:41.436030Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:31:44.643540Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:31:44.643147Z&quot;}}" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>clicks_per_query_products <span class="op">=</span> df.groupby(<span class="st">"query"</span>).size()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>eligible_queries <span class="op">=</span> clicks_per_query_products[clicks_per_query_products <span class="op">&gt;=</span> <span class="dv">3</span>].index</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>query_clicks_full <span class="op">=</span> df[df[<span class="st">"query"</span>].isin(eligible_queries)].groupby(<span class="st">"query"</span>)[<span class="st">"product_id"</span>].<span class="bu">apply</span>(<span class="bu">set</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(RANDOM_STATE)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>sample_queries <span class="op">=</span> rng.choice(query_clicks_full.index.to_numpy(), size<span class="op">=</span><span class="dv">500</span>, replace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>predicted_intent <span class="op">=</span> {q: intent_pipeline.predict([joined_tokens(q)])[<span class="dv">0</span>] <span class="cf">for</span> q <span class="kw">in</span> sample_queries}</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>diversity_rows <span class="op">=</span> []</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> q <span class="kw">in</span> sample_queries:</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    content_cats <span class="op">=</span> recommend_content(q, catalog, k<span class="op">=</span><span class="dv">10</span>)[<span class="st">"category"</span>]</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    hybrid_cats <span class="op">=</span> recommend_hybrid(q, catalog, intent_pipeline, k<span class="op">=</span><span class="dv">10</span>)[<span class="st">"category"</span>]</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    diversity_rows.append(</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">"query"</span>: q,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">"intent"</span>: predicted_intent[q],</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content_n_distinct"</span>: category_diversity(content_cats)[<span class="st">"n_distinct"</span>],</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>            <span class="st">"content_entropy"</span>: category_diversity(content_cats)[<span class="st">"entropy"</span>],</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>            <span class="st">"hybrid_n_distinct"</span>: category_diversity(hybrid_cats)[<span class="st">"n_distinct"</span>],</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>            <span class="st">"hybrid_entropy"</span>: category_diversity(hybrid_cats)[<span class="st">"entropy"</span>],</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>diversity_df <span class="op">=</span> pd.DataFrame(diversity_rows)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">"all queries"</span>: diversity_df[[<span class="st">"content_n_distinct"</span>, <span class="st">"content_entropy"</span>, <span class="st">"hybrid_n_distinct"</span>, <span class="st">"hybrid_entropy"</span>]].mean(),</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">"exploratory queries only"</span>: diversity_df.loc[</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>            diversity_df[<span class="st">"intent"</span>] <span class="op">==</span> <span class="st">"exploratory"</span>,</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>            [<span class="st">"content_n_distinct"</span>, <span class="st">"content_entropy"</span>, <span class="st">"hybrid_n_distinct"</span>, <span class="st">"hybrid_entropy"</span>],</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        ].mean(),</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>summary</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">all queries</th>
+<th data-quarto-table-cell-role="th">exploratory queries only</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">content_n_distinct</th>
+<td>1.982000</td>
+<td>2.447761</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">content_entropy</th>
+<td>0.624299</td>
+<td>0.956876</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">hybrid_n_distinct</th>
+<td>3.142000</td>
+<td>5.333333</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">hybrid_entropy</th>
+<td>1.199299</td>
+<td>2.387224</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="d44021b5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:31:44.644478Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:31:44.644398Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:31:44.706792Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:31:44.706454Z&quot;}}" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>exploratory <span class="op">=</span> diversity_df[diversity_df[<span class="st">"intent"</span>] <span class="op">==</span> <span class="st">"exploratory"</span>]</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="dv">2</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="fl">0.35</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">-</span> width <span class="op">/</span> <span class="dv">2</span>, [summary.loc[<span class="st">"content_n_distinct"</span>, <span class="st">"all queries"</span>], summary.loc[<span class="st">"content_n_distinct"</span>, <span class="st">"exploratory queries only"</span>]], width, label<span class="op">=</span><span class="st">"content-only"</span>, color<span class="op">=</span>PRIMARY)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">+</span> width <span class="op">/</span> <span class="dv">2</span>, [summary.loc[<span class="st">"hybrid_n_distinct"</span>, <span class="st">"all queries"</span>], summary.loc[<span class="st">"hybrid_n_distinct"</span>, <span class="st">"exploratory queries only"</span>]], width, label<span class="op">=</span><span class="st">"intent-aware hybrid"</span>, color<span class="op">=</span>SECONDARY)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels([<span class="st">"all queries"</span>, <span class="st">"exploratory queries only"</span>])</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"mean distinct categories in top-10"</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Recommendation diversity: content-only vs. hybrid"</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="06_evaluation_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Averaged over all sampled queries, the hybrid nearly doubles category diversity (1.98 -&gt; 3.14 distinct categories per top-10). Restricted to queries predicted <code>exploratory</code>, the gap is much larger: 2.45 -&gt; 5.33 distinct categories, entropy 0.96 -&gt; 2.39 bits. That’s the other half of notebook 04’s tradeoff, now measured rather than only shown on <code>"dia dos pais"</code>: a real, substantial diversity gain, purchased at the recall cost notebook 04 already named.</p>
+</section>
+<section id="cross-system-validation" class="level2">
+<h2 class="anchored" data-anchor-id="cross-system-validation">5. Cross-system validation</h2>
+<p>Every evaluation so far has scored one system against its own kind of ground truth: products against their own labels, queries against manufactured intent labels, recommendations against historical clicks. Nothing has checked whether the query-category classifier (notebook 05), validated so far only against held-out <em>product</em> labels, actually predicts what real <strong>searchers</strong> were looking for. The dataset can answer this: for a query with enough click history, compare the classifier’s prediction against the <strong>actual majority category of that query’s historical clicks</strong>, using the same 500-query sample as §4 for direct comparability.</p>
+<div id="2607b350" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:31:44.707756Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:31:44.707665Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:31:45.355886Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:31:45.355665Z&quot;}}" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> majority_category(categories):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> categories.value_counts().idxmax()</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> top_share_of(categories):</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> categories.value_counts(normalize<span class="op">=</span><span class="va">True</span>).iloc[<span class="dv">0</span>]</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>query_majority <span class="op">=</span> sub.groupby(<span class="st">"query"</span>)[<span class="st">"category"</span>].agg(</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    majority_category<span class="op">=</span>majority_category, top_share<span class="op">=</span>top_share_of</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>sample <span class="op">=</span> query_majority.loc[query_majority.index.intersection(sample_queries)].copy()</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>sample[<span class="st">"predicted_category"</span>] <span class="op">=</span> query_category_pipeline.predict(</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    [joined_tokens(q) <span class="cf">for</span> q <span class="kw">in</span> sample.index]</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>sample[<span class="st">"match"</span>] <span class="op">=</span> sample[<span class="st">"predicted_category"</span>] <span class="op">==</span> sample[<span class="st">"majority_category"</span>]</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>dummy_prediction <span class="op">=</span> df[<span class="st">"category"</span>].value_counts().idxmax()</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>dummy_accuracy <span class="op">=</span> (sample[<span class="st">"majority_category"</span>] <span class="op">==</span> dummy_prediction).mean()</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>specific_mask <span class="op">=</span> sample[<span class="st">"top_share"</span>] <span class="op">&gt;=</span> TOP_SHARE_THRESHOLD</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">"n"</span>: [<span class="bu">len</span>(sample), specific_mask.<span class="bu">sum</span>(), (<span class="op">~</span>specific_mask).<span class="bu">sum</span>()],</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">"accuracy"</span>: [</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>            sample[<span class="st">"match"</span>].mean(),</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>            sample.loc[specific_mask, <span class="st">"match"</span>].mean(),</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>            sample.loc[<span class="op">~</span>specific_mask, <span class="st">"match"</span>].mean(),</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>[<span class="st">"overall"</span>, <span class="st">"specific queries"</span>, <span class="st">"exploratory queries"</span>],</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"dummy baseline (always predict </span><span class="sc">{</span>dummy_prediction<span class="sc">!r}</span><span class="ss">): </span><span class="sc">{</span>dummy_accuracy<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>dummy baseline (always predict 'Lembrancinhas'): 0.406</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">n</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">overall</th>
+<td>500</td>
+<td>0.864000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">specific queries</th>
+<td>363</td>
+<td>0.955923</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">exploratory queries</th>
+<td>137</td>
+<td>0.620438</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>86.4% overall, far above the 40.6% dummy baseline, real evidence the query-category classifier works on genuine search behavior, not just on held-out product labels. But split by predicted intent, the story sharpens: 95.6% accuracy on <code>specific</code> queries, 62.0% on <code>exploratory</code> ones. This makes sense by construction, not as a failure: an <code>exploratory</code> query’s clicks genuinely spread across several categories, so no single predicted category can match “the” majority well, the same reason <code>top_share</code> is low for these queries in the first place. The intent classifier isn’t just a separate output sitting next to the category prediction, it’s diagnostic information about how much to trust it.</p>
+<p>A few concrete disagreements, all from the <code>exploratory</code> bucket:</p>
+<div id="bcf1e25f" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:31:45.356836Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:31:45.356750Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:31:45.360182Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:31:45.360012Z&quot;}}" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>disagreements <span class="op">=</span> sample[(<span class="op">~</span>specific_mask) <span class="op">&amp;</span> (<span class="op">~</span>sample[<span class="st">"match"</span>])].sort_values(<span class="st">"top_share"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>disagreements[[<span class="st">"majority_category"</span>, <span class="st">"predicted_category"</span>, <span class="st">"top_share"</span>]].head(<span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">majority_category</th>
+<th data-quarto-table-cell-role="th">predicted_category</th>
+<th data-quarto-table-cell-role="th">top_share</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">query</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">festa super herois</th>
+<td>Bebê</td>
+<td>Lembrancinhas</td>
+<td>0.250000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">caixa de acetato</th>
+<td>Lembrancinhas</td>
+<td>Papel e Cia</td>
+<td>0.333333</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">decoracao festa chuva</th>
+<td>Bebê</td>
+<td>Decoração</td>
+<td>0.333333</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">festa stranger things</th>
+<td>Lembrancinhas</td>
+<td>Decoração</td>
+<td>0.333333</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">frases para livro de ouro para formatura</th>
+<td>Decoração</td>
+<td>Lembrancinhas</td>
+<td>0.333333</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">kit almofada</th>
+<td>Bebê</td>
+<td>Decoração</td>
+<td>0.333333</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p><code>"festa super herois"</code> (“superhero party”), <code>"kit almofada"</code> (“pillow kit”), <code>"caixa de acetato"</code> (“acetate box”): every one of these is a query that could plausibly lead to several different kinds of products, exactly what a low <code>top_share</code> already says about them. The classifier’s single answer isn’t wrong so much as the question (“what one category does this belong to”) is underspecified for these queries in the first place.</p>
+</section>
+<section id="error-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="error-analysis">6. Error analysis</h2>
+<p>Pulling §2 and §5’s concrete examples together: the errors across this project’s systems cluster into two kinds, and it’s worth being precise about which is which.</p>
+<p><strong>Genuine category-boundary ambiguity</strong>, not fixable by more tuning: <code>Papel e Cia</code> vs. <code>Lembrancinhas</code> products that are reasonably both things (§2); <code>exploratory</code> queries where no single category is a good answer by construction (§5). More data or a different algorithm wouldn’t resolve these, because the ambiguity is in the underlying task, sellers and searchers genuinely straddling categories, not in the model.</p>
+<p><strong>A real, quantified limit, not an error exactly</strong>: the intent generalization classifier’s macro-F1 ceiling (~0.68, notebook 03) reflects query text being a noisier proxy for click-scatter behavior than product text is for product category. This isn’t ambiguity in the same sense, it’s a harder underlying signal-recovery problem, honestly measured rather than hidden.</p>
+<p>Nothing found here looks like a straightforward implementation bug or an obviously fixable modeling choice; both categories of “error” are the dataset and task pushing back on a model that’s already doing about as well as the available signal allows.</p>
+</section>
+<section id="future-work" class="level2">
+<h2 class="anchored" data-anchor-id="future-work">7. Future work</h2>
+<p>Concrete extensions this project’s own findings point to, not a generic wishlist:</p>
+<ul>
+<li><strong>Approximate nearest-neighbor search for the recommender.</strong> Brute-force cosine similarity is fine at this project’s ~30,000-product catalog (milliseconds per query, notebook 04), but the spec’s own framing of Elo7’s real catalog (~6 million products) would need an ANN index (e.g.&nbsp;HNSW) to stay fast.</li>
+<li><strong>A richer intent axis.</strong> Price dispersion was considered and deliberately excluded from the primary intent classes (notebook 03) for label-volume reasons; with more labeled data, a combined specificity x price-tier framing could be revisited.</li>
+<li><strong>Real online evaluation.</strong> The historical-click hit-rate/recall metric (notebook 04) can only reward recommendations that match Elo7’s own past search ranking; it structurally cannot validate a genuinely better, more diverse recommendation the old ranking never surfaced. Only live traffic (an A/B test) could close that gap.</li>
+<li><strong>Confidence-aware category prediction for <code>exploratory</code> queries.</strong> §5 shows a single predicted category is a poor fit specifically for <code>exploratory</code> queries. Rather than forcing one answer, the integrated system could return the top few candidate categories, or lean more heavily on the recommender’s own category spread, when intent is <code>exploratory</code>.</li>
+</ul>
+</section>
+<section id="key-findings-handoff" class="level2">
+<h2 class="anchored" data-anchor-id="key-findings-handoff">8. Key findings &amp; handoff</h2>
+<p><strong>Across all five systems:</strong></p>
+<ul>
+<li>Product classification (02): macro-F1 0.85, product text alone accounts for nearly all of it.</li>
+<li>Intent modeling (03): a validated, two-class behavioral split, generalizing to unseen queries at macro-F1 ~0.68, an honestly-stated ceiling.</li>
+<li>Recommendation (04): content similarity clears popularity by a wide margin; intent-aware diversification trades a real, named amount of historical-click recall for a real, now measured amount of category diversity (§4).</li>
+<li>Integration (05): the query -&gt; category gap closes at a small (0.006 macro-F1), explained cost using a text-only classifier rather than fabricated numeric inputs.</li>
+<li>Cross-system validation (05’s classifier against real search behavior, §5): 86.4% overall, 95.6% on <code>specific</code> queries, 62.0% on <code>exploratory</code> ones, the clearest evidence in this project that the intent signal and the category signal are entangled in a way worth designing around, not two independent outputs bolted together.</li>
+</ul>
+<p><strong>The project’s central question</strong>, whether user intent can be inferred from a search query alone: yes, to a real, measured, and honestly-bounded degree. Category is recoverable from query text with a small, quantified cost relative to having a product’s full description (§5); a behavioral notion of intent (specific vs.&nbsp;exploratory) is recoverable from query text alone at a meaningfully lower but still genuinely useful ceiling (notebook 03, §3 here); and knowing which kind of query it is materially changes both how reliable the category prediction is (§5) and how the recommender should behave (§4).</p>
+<p>This is the last notebook in the sequence; no further notebook to hand off to.</p>
+<div id="0f0e3e55" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T19:31:45.361014Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T19:31:45.360938Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T19:31:45.586228Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T19:31:45.585945Z&quot;}}" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="fl">4.5</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].bar([<span class="st">"numeric only"</span>, <span class="st">"product text</span><span class="ch">\n</span><span class="st">+ numeric"</span>], [<span class="fl">0.40</span>, <span class="fl">0.85</span>], color<span class="op">=</span>[SECONDARY, PRIMARY])</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">"Product classification</span><span class="ch">\n</span><span class="st">(macro-F1)"</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].bar([<span class="st">"dummy"</span>, <span class="st">"query text"</span>], [<span class="fl">0.42</span>, <span class="fl">0.68</span>], color<span class="op">=</span>[SECONDARY, PRIMARY])</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">"Intent generalization</span><span class="ch">\n</span><span class="st">(macro-F1)"</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">2</span>].bar(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"overall"</span>, <span class="st">"specific</span><span class="ch">\n</span><span class="st">queries"</span>, <span class="st">"exploratory</span><span class="ch">\n</span><span class="st">queries"</span>],</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    [results.loc[<span class="st">"overall"</span>, <span class="st">"accuracy"</span>], results.loc[<span class="st">"specific queries"</span>, <span class="st">"accuracy"</span>], results.loc[<span class="st">"exploratory queries"</span>, <span class="st">"accuracy"</span>]],</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span>[PRIMARY, PRIMARY, SECONDARY],</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">2</span>].axhline(dummy_accuracy, color<span class="op">=</span><span class="st">"grey"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="dv">1</span>, label<span class="op">=</span><span class="ss">f"dummy (</span><span class="sc">{</span>dummy_accuracy<span class="sc">:.2f}</span><span class="ss">)"</span>)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">2</span>].set_title(<span class="st">"Query -&gt; category vs.</span><span class="ch">\n</span><span class="st">real search behavior"</span>)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">2</span>].set_ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">2</span>].legend(fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">"Evaluation summary across all five systems"</span>)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>reports_dir <span class="op">=</span> Path(<span class="st">"../reports"</span>)</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>reports_dir.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>fig.savefig(reports_dir <span class="op">/</span> <span class="st">"06_evaluation_summary.png"</span>, dpi<span class="op">=</span><span class="dv">150</span>, bbox_inches<span class="op">=</span><span class="st">"tight"</span>)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"saved ../reports/06_evaluation_summary.png"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="06_evaluation_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>saved ../reports/06_evaluation_summary.png</code></pre>
+</div>
+</div>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

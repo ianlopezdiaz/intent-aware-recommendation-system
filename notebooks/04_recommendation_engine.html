@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>recommendation_engine – Intent-Aware Recommendation System</title>
+<title>Recommendation Engine – Intent-Aware Recommendation System</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,10 +23,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -43,8 +78,8 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-6b6957c917596b414ec0b78690761e87.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3029e7e195d8e149f4708ed6e6ea6f46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-45530282dfcbb60aa45e6cc5bdc99add.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-8262f2511af8a51d287c26da9595b204.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-198293974897f3d9a3d0b581c8f06b26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,6 +107,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -326,18 +364,803 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-task" id="toc-the-task" class="nav-link active" data-scroll-target="#the-task">The task</a></li>
+  <li><a href="#scope-boundary-with-notebook-05" id="toc-scope-boundary-with-notebook-05" class="nav-link" data-scroll-target="#scope-boundary-with-notebook-05">Scope boundary with notebook 05</a></li>
+  <li><a href="#questions-this-notebook-answers" id="toc-questions-this-notebook-answers" class="nav-link" data-scroll-target="#questions-this-notebook-answers">Questions this notebook answers</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">1. Setup</a></li>
+  <li><a href="#popularity-baseline" id="toc-popularity-baseline" class="nav-link" data-scroll-target="#popularity-baseline">2. Popularity baseline</a></li>
+  <li><a href="#content-based-recommender" id="toc-content-based-recommender" class="nav-link" data-scroll-target="#content-based-recommender">3. Content-based recommender</a></li>
+  <li><a href="#evaluating-against-historical-clicks" id="toc-evaluating-against-historical-clicks" class="nav-link" data-scroll-target="#evaluating-against-historical-clicks">4. Evaluating against historical clicks</a></li>
+  <li><a href="#the-diversity-problem" id="toc-the-diversity-problem" class="nav-link" data-scroll-target="#the-diversity-problem">5. The diversity problem</a></li>
+  <li><a href="#intent-aware-hybrid" id="toc-intent-aware-hybrid" class="nav-link" data-scroll-target="#intent-aware-hybrid">6. Intent-aware hybrid</a></li>
+  <li><a href="#handling-the-edge-case-queries-with-no-vocabulary-overlap-at-all" id="toc-handling-the-edge-case-queries-with-no-vocabulary-overlap-at-all" class="nav-link" data-scroll-target="#handling-the-edge-case-queries-with-no-vocabulary-overlap-at-all">7. Handling the edge case: queries with no vocabulary overlap at all</a></li>
+  <li><a href="#recommendation-examples" id="toc-recommendation-examples" class="nav-link" data-scroll-target="#recommendation-examples">8. Recommendation examples</a></li>
+  <li><a href="#key-findings-handoff" id="toc-key-findings-handoff" class="nav-link" data-scroll-target="#key-findings-handoff">9. Key findings &amp; handoff</a></li>
+  <li><a href="#closing-remarks" id="toc-closing-remarks" class="nav-link" data-scroll-target="#closing-remarks">Closing remarks</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Recommendation Engine</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<p>This is the fourth notebook in the Elo7 Data Science Challenge project (full problem statement: <a href="../docs/elo7-ds-challenge-en.html"><code>../docs/elo7-ds-challenge-en.md</code></a>; notebook 01: <a href="../notebooks/01_exploratory_data_analysis.html"><code>01_exploratory_data_analysis.ipynb</code></a>; notebook 02: <a href="../notebooks/02_product_classification.html"><code>02_product_classification.ipynb</code></a>; notebook 03: <a href="../notebooks/03_search_intent_modeling.html"><code>03_search_intent_modeling.ipynb</code></a>).</p>
+<section id="the-task" class="level2">
+<h2 class="anchored" data-anchor-id="the-task">The task</h2>
+<p>The spec doesn’t give recommendation its own numbered part: it’s folded into Part 5 (System Integration), which asks for a query in, top-10 relevant products out. This project splits that into two notebooks: <strong>build</strong> the recommender itself here, <strong>wire it into the full query -&gt; category / intent / recommendations pipeline</strong> in notebook 05.</p>
+</section>
+<section id="scope-boundary-with-notebook-05" class="level2">
+<h2 class="anchored" data-anchor-id="scope-boundary-with-notebook-05">Scope boundary with notebook 05</h2>
+<p>Worth being explicit about before writing any code:</p>
+<ul>
+<li><strong>Content similarity and popularity</strong> are fully in scope here. Both operate on product text/numeric fields already available.</li>
+<li><strong>Intent-awareness</strong> is in scope here too. Notebook 03’s intent classifier is text-only and already generalizes to any query, seen or unseen, so there’s no reason to wait for it.</li>
+<li><strong>Category-awareness is out of scope here, deferred to notebook 05.</strong> Applying notebook 02’s product classifier to a raw query needs the “no numerical features available” handling the spec explicitly calls its own problem, distinct from product classification. Notebook 05 picks that up; this notebook builds the intent-aware half of the recommender now.</li>
+</ul>
+</section>
+<section id="questions-this-notebook-answers" class="level2">
+<h2 class="anchored" data-anchor-id="questions-this-notebook-answers">Questions this notebook answers</h2>
+<ol type="1">
+<li><strong>Popularity baseline</strong>: how good is “just recommend what’s popular,” ignoring the query entirely, and what does that floor look like?</li>
+<li><strong>Content-based recommender</strong>: can a query be matched to relevant products using text similarity alone, and how well?</li>
+<li><strong>Evaluation</strong>: what can historical click data tell us about recommendation quality, given there’s no ground-truth “relevant products” label?</li>
+<li><strong>Diversity</strong>: does pure content similarity have a real, visible failure mode, and what does it look like concretely?</li>
+<li><strong>Intent-aware hybrid</strong>: does folding in the intent classifier fix that failure mode, and at what cost?</li>
+<li><strong>Edge cases</strong>: what happens when a query shares no vocabulary with the catalog at all?</li>
+</ol>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">1. Setup</h2>
+<p>We load the same cleaned dataset notebook 01 persisted, deduplicated to one row per product (same convention as notebook 02, since a recommender should search a catalog of distinct products, not weight popular products extra just because they were clicked on more often).</p>
+<p>Rather than fitting a new text vectorizer, we reuse the one already fitted inside notebook 02’s saved classifier pipeline: it’s trained on exactly the product catalog we need to search over (<code>title</code> + <code>concatenated_tags</code>), so extracting it means the classification and recommendation systems share one vector space at no extra cost, instead of maintaining two separate ones that happen to do almost the same thing.</p>
+<div id="80133eb1" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:09.727115Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:09.726630Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:10.899028Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:10.898779Z&quot;}}" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> joblib</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.load <span class="im">import</span> load_processed_dataset</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.preprocess <span class="im">import</span> deduplicate_products</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.evaluation.metrics <span class="im">import</span> evaluate_recommender</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.features.text <span class="im">import</span> joined_tokens</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.models.recommender <span class="im">import</span> (</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    build_catalog,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    content_scores,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    recommend_content,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    recommend_hybrid,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    recommend_popularity,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>PRIMARY <span class="op">=</span> <span class="st">"#2a78d6"</span>  <span class="co"># Blue, the default single hue for magnitude comparisons.</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>SECONDARY <span class="op">=</span> <span class="st">"#eb6834"</span>  <span class="co"># Orange, the second series whenever a chart compares exactly two things.</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.dpi"</span>] <span class="op">=</span> <span class="dv">110</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"axes.spines.top"</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"axes.spines.right"</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>RANDOM_STATE <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_processed_dataset(<span class="st">"01_data.parquet"</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>products <span class="op">=</span> deduplicate_products(df)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>products[<span class="st">"product_text"</span>] <span class="op">=</span> [</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    joined_tokens(t, tg) <span class="cf">for</span> t, tg <span class="kw">in</span> <span class="bu">zip</span>(products[<span class="st">"title"</span>], products[<span class="st">"concatenated_tags"</span>])</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>classifier_pipeline <span class="op">=</span> joblib.load(<span class="st">"../models/02_product_classifier.joblib"</span>)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>tfidf <span class="op">=</span> classifier_pipeline.named_steps[<span class="st">"preprocess"</span>].named_transformers_[<span class="st">"text"</span>]</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>intent_pipeline <span class="op">=</span> joblib.load(<span class="st">"../models/03_intent_classifier.joblib"</span>)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>catalog <span class="op">=</span> build_catalog(products, tfidf)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"catalog: </span><span class="sc">{</span>catalog<span class="sc">.</span>text_matrix<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">:,}</span><span class="ss"> products, </span><span class="sc">{</span>catalog<span class="sc">.</span>text_matrix<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">:,}</span><span class="ss"> vocabulary terms"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>catalog: 29,778 products, 6,392 vocabulary terms</code></pre>
+</div>
+</div>
+</section>
+<section id="popularity-baseline" class="level2">
+<h2 class="anchored" data-anchor-id="popularity-baseline">2. Popularity baseline</h2>
+<p>The simplest possible recommender: ignore the query, return whatever gets viewed the most. This is the floor every other approach needs to clear, not a serious candidate on its own.</p>
+<div id="1ebc5c8b" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:10.900190Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:10.899966Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:10.905761Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:10.905573Z&quot;}}" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>recommend_popularity(catalog, k<span class="op">=</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">product_id</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">category</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>15722213</td>
+<td>Tapete simples em croche</td>
+<td>Decoração</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>6977307</td>
+<td>Bolsa Maternidade Rose kit 4 peças mala bebe</td>
+<td>Bebê</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>9836291</td>
+<td>kit bolsa mala bebe maternidade personalizada</td>
+<td>Bebê</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>9730357</td>
+<td>Saída Maternidade Menina Anny 5 peças Salmão</td>
+<td>Bebê</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>8271183</td>
+<td>Mini suculentas - PROMOÇÃO</td>
+<td>Lembrancinhas</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>No relation to any query at all, by construction. Whether that’s actually a weak baseline, not just an obviously weak one, is a question §4 answers with numbers rather than intuition.</p>
+</section>
+<section id="content-based-recommender" class="level2">
+<h2 class="anchored" data-anchor-id="content-based-recommender">3. Content-based recommender</h2>
+<p>Vectorize the query with the same TF-IDF vocabulary as the product catalog, rank every product by cosine similarity, return the top-k. This works because notebook 01 already established that query and product-title vocabulary overlap heavily (94% of query words appear somewhere in product text).</p>
+<div id="0bf8b675" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:10.906835Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:10.906744Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:10.914402Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:10.914215Z&quot;}}" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>recommend_content(<span class="st">"anel de prata"</span>, catalog, k<span class="op">=</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">product_id</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">category</th>
+<th data-quarto-table-cell-role="th">similarity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>14308022</td>
+<td>Anel Claddagh em Prata</td>
+<td>Bijuterias e Jóias</td>
+<td>0.965180</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>12722782</td>
+<td>Anel Trançado em Prata</td>
+<td>Bijuterias e Jóias</td>
+<td>0.813582</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>235944</td>
+<td>Anel em prata maleável</td>
+<td>Bijuterias e Jóias</td>
+<td>0.812300</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>10202276</td>
+<td>Anel de Prata Letras - Anel de Prata Feminino ...</td>
+<td>Bijuterias e Jóias</td>
+<td>0.809388</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>10764366</td>
+<td>Anel 4 Safiras em PRATA 925 - FRETE GRÁTIS</td>
+<td>Bijuterias e Jóias</td>
+<td>0.805701</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>A tight, clearly relevant result, decreasing similarity down the list, exactly what a working ranking should look like. A query with more genuinely ambiguous matches makes the similarity spread more informative to look at:</p>
+<div id="55028dc1" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:10.915379Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:10.915287Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:10.921472Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:10.921296Z&quot;}}" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>recommend_content(<span class="st">"caixa de presente"</span>, catalog, k<span class="op">=</span><span class="dv">8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">product_id</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">category</th>
+<th data-quarto-table-cell-role="th">similarity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>15244665</td>
+<td>Caixa para presente</td>
+<td>Papel e Cia</td>
+<td>0.857805</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>9576707</td>
+<td>Caixa para Presente Personalizada</td>
+<td>Lembrancinhas</td>
+<td>0.821724</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>8598157</td>
+<td>Caixa para presente dia dos pais</td>
+<td>Papel e Cia</td>
+<td>0.787079</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>11894328</td>
+<td>Caixa para presente personalizada</td>
+<td>Papel e Cia</td>
+<td>0.741246</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>1538792</td>
+<td>Caixa presente</td>
+<td>Decoração</td>
+<td>0.691443</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>302731</td>
+<td>CAIXA PRESENTE - BATIZADO</td>
+<td>Lembrancinhas</td>
+<td>0.686363</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>15001944</td>
+<td>Caixa para presente personalizada</td>
+<td>Lembrancinhas</td>
+<td>0.587648</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>12416507</td>
+<td>Presente 15 anos</td>
+<td>Decoração</td>
+<td>0.586672</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="evaluating-against-historical-clicks" class="level2">
+<h2 class="anchored" data-anchor-id="evaluating-against-historical-clicks">4. Evaluating against historical clicks</h2>
+<p>No ground-truth “relevant products for this query” label exists anywhere in the dataset. But for queries with enough click history (reusing notebook 03’s <code>&gt;= 3</code>-click eligibility threshold), the products that were <strong>actually clicked</strong> are a real, if narrow and biased, proxy for relevance. Two metrics, computed against a fixed random sample of 500 eligible queries:</p>
+<ul>
+<li><strong>hit-rate@10</strong>: did at least one actually-clicked product appear in the top 10?</li>
+<li><strong>recall@10</strong>: what share of a query’s actually-clicked products appeared in the top 10?</li>
+</ul>
+<div id="8e932639" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:10.922179Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:10.922092Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:10.959934Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:10.959721Z&quot;}}" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>clicks_per_query <span class="op">=</span> df.groupby(<span class="st">"query"</span>).size()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>eligible_queries <span class="op">=</span> clicks_per_query[clicks_per_query <span class="op">&gt;=</span> <span class="dv">3</span>].index</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>query_clicks_full <span class="op">=</span> df[df[<span class="st">"query"</span>].isin(eligible_queries)].groupby(<span class="st">"query"</span>)[<span class="st">"product_id"</span>].<span class="bu">apply</span>(<span class="bu">set</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(RANDOM_STATE)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>sample_queries <span class="op">=</span> rng.choice(query_clicks_full.index.to_numpy(), size<span class="op">=</span><span class="dv">500</span>, replace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>query_clicks <span class="op">=</span> {q: query_clicks_full[q] <span class="cf">for</span> q <span class="kw">in</span> sample_queries}</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(query_clicks)<span class="sc">:,}</span><span class="ss"> sample queries evaluated"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>500 sample queries evaluated</code></pre>
+</div>
+</div>
+<div id="1b85b214" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:10.960752Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:10.960659Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:12.612247Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:12.612028Z&quot;}}" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> content_ids(query, k<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">set</span>(recommend_content(query, catalog, k<span class="op">=</span>k)[<span class="st">"product_id"</span>])</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> popularity_ids(query, k<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">set</span>(recommend_popularity(catalog, k<span class="op">=</span>k)[<span class="st">"product_id"</span>])</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> random_ids(query, k<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">set</span>(rng.choice(catalog.products[<span class="st">"product_id"</span>].to_numpy(), size<span class="op">=</span>k, replace<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"random"</span>: evaluate_recommender(random_ids, query_clicks),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"popularity (view_counts)"</span>: evaluate_recommender(popularity_ids, query_clicks),</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"content (TF-IDF cosine)"</span>: evaluate_recommender(content_ids, query_clicks),</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(results).T</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">hit_rate</th>
+<th data-quarto-table-cell-role="th">recall</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">random</th>
+<td>0.006</td>
+<td>0.000600</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">popularity (view_counts)</th>
+<td>0.014</td>
+<td>0.001022</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">content (TF-IDF cosine)</th>
+<td>0.860</td>
+<td>0.417467</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Content similarity dominates both baselines by a wide margin: it’s directly exploiting the same query/product vocabulary overlap notebook 01 already found. Popularity alone is close to useless against this metric, which makes sense: it ignores the query entirely, so it almost never happens to surface the one specific niche product someone was searching for out of nearly 30,000. This is real evidence, not an assumption, that content similarity belongs at the core of the recommender.</p>
+</section>
+<section id="the-diversity-problem" class="level2">
+<h2 class="anchored" data-anchor-id="the-diversity-problem">5. The diversity problem</h2>
+<p>A strong aggregate score can still hide a real failure mode. <code>"dia dos pais"</code> (Father’s Day) is notebook 03’s own example of a query whose clicks, historically, spread across all six categories, exactly the kind of broad, exploratory search the intent classifier is meant to recognize. What does pure content similarity return for it?</p>
+<div id="9e73b0b7" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:12.613320Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:12.613202Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:12.618318Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:12.618138Z&quot;}}" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pure_content <span class="op">=</span> recommend_content(<span class="st">"dia dos pais"</span>, catalog, k<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>pure_content[<span class="st">"category"</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>category
+Lembrancinhas    9
+Outros           1
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<div id="9ecf67ca" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:12.619074Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:12.618995Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:12.622019Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:12.621858Z&quot;}}" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pure_content[[<span class="st">"title"</span>, <span class="st">"category"</span>, <span class="st">"similarity"</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">category</th>
+<th data-quarto-table-cell-role="th">similarity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Dia dos pais</td>
+<td>Lembrancinhas</td>
+<td>1.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Dia dos Pais</td>
+<td>Lembrancinhas</td>
+<td>1.000000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Lembrancinha Dia dos Pais</td>
+<td>Lembrancinhas</td>
+<td>0.960683</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>Lembrancinha Dia dos Pais</td>
+<td>Lembrancinhas</td>
+<td>0.960683</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>Lembrancinha Dia dos pais</td>
+<td>Lembrancinhas</td>
+<td>0.960683</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>Lembrancinha Dia dos Pais</td>
+<td>Lembrancinhas</td>
+<td>0.960683</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>Lembrancinha Dia dos Pais</td>
+<td>Lembrancinhas</td>
+<td>0.960683</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>Lembrancinha Dia dos Pais I</td>
+<td>Lembrancinhas</td>
+<td>0.960683</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>Lembrancinha Dia dos Pais</td>
+<td>Outros</td>
+<td>0.960683</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>Lembrancinha Dia dos Pais</td>
+<td>Lembrancinhas</td>
+<td>0.960683</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Nine of ten results are <code>Lembrancinhas</code>, several of them near-duplicate listings of the same generic “Dia dos Pais” gift, worded slightly differently by different sellers. Technically correct (these products are the closest text matches) but a narrow, repetitive top-10 for a searcher whose real behavior, per notebook 03, spans every category. This is the concrete failure mode worth fixing, not diversity pursued as an abstract virtue.</p>
+</section>
+<section id="intent-aware-hybrid" class="level2">
+<h2 class="anchored" data-anchor-id="intent-aware-hybrid">6. Intent-aware hybrid</h2>
+<p>The fix: cap the top-10 at a small number of products per <code>category</code>, so a broad query can’t be dominated by near-duplicates of one listing, but only when the intent classifier predicts <code>exploratory</code>. Applying a diversity cap to every query regardless of intent is a real risk, not a hypothetical one, so we check it directly on a query that should <strong>not</strong> be diversified.</p>
+<div id="0233f8e2" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:12.622722Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:12.622647Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:12.628586Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:12.628419Z&quot;}}" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>hybrid_exploratory <span class="op">=</span> recommend_hybrid(<span class="st">"dia dos pais"</span>, catalog, intent_pipeline, k<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"predicted intent:"</span>, intent_pipeline.predict([joined_tokens(<span class="st">"dia dos pais"</span>)])[<span class="dv">0</span>])</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>hybrid_exploratory[<span class="st">"category"</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>predicted intent: exploratory</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>category
+Lembrancinhas    2
+Outros           2
+Papel e Cia      2
+Decoração        2
+Bebê             2
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p>Spread across five categories now, <code>Lembrancinhas</code>, <code>Outros</code>, <code>Papel e Cia</code>, <code>Decoração</code>, <code>Bebê</code>, each capped at two, with every result still above 0.88 similarity: a genuinely varied set that better matches how this query’s clicks actually spread historically, without giving up much on relevance.</p>
+<div id="b929fcb2" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:12.629292Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:12.629217Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:12.634778Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:12.634606Z&quot;}}" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>hybrid_specific <span class="op">=</span> recommend_hybrid(<span class="st">"anel de prata"</span>, catalog, intent_pipeline, k<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"predicted intent:"</span>, intent_pipeline.predict([joined_tokens(<span class="st">"anel de prata"</span>)])[<span class="dv">0</span>])</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>hybrid_specific[<span class="st">"category"</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>predicted intent: specific</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>category
+Bijuterias e Jóias    10
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p><code>"anel de prata"</code> is predicted <code>specific</code>, so no cap is applied, and the result stays the same tight, all-<code>Bijuterias e Jóias</code> list from §3. Forcing a category cap onto this query regardless of intent (tested directly, not shown here) drags in wall-mounted decor and antique-coin rings at similarity as low as 0.21, replacing good results with worse ones purely to satisfy a diversity quota this query never needed. Making the cap intent-conditional, not a blanket rule, is what avoids that.</p>
+<p>Does this actually help or hurt against the historical-click metric from §4?</p>
+<div id="2d16c723" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:12.635524Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:12.635437Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:15.193476Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:15.193056Z&quot;}}" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>predicted_intent <span class="op">=</span> {q: intent_pipeline.predict([joined_tokens(q)])[<span class="dv">0</span>] <span class="cf">for</span> q <span class="kw">in</span> sample_queries}</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hybrid_ids(query, k<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">set</span>(recommend_hybrid(query, catalog, intent_pipeline, k<span class="op">=</span>k)[<span class="st">"product_id"</span>])</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>overall <span class="op">=</span> evaluate_recommender(hybrid_ids, query_clicks)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>exploratory_clicks <span class="op">=</span> {q: c <span class="cf">for</span> q, c <span class="kw">in</span> query_clicks.items() <span class="cf">if</span> predicted_intent[q] <span class="op">==</span> <span class="st">"exploratory"</span>}</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>content_exploratory <span class="op">=</span> evaluate_recommender(content_ids, exploratory_clicks)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>hybrid_exploratory_eval <span class="op">=</span> evaluate_recommender(hybrid_ids, exploratory_clicks)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"content, all queries"</span>: results[<span class="st">"content (TF-IDF cosine)"</span>],</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hybrid, all queries"</span>: overall,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"content, exploratory only"</span>: content_exploratory,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"hybrid, exploratory only"</span>: hybrid_exploratory_eval,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>).T</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">hit_rate</th>
+<th data-quarto-table-cell-role="th">recall</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">content, all queries</th>
+<td>0.860000</td>
+<td>0.417467</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">hybrid, all queries</th>
+<td>0.814000</td>
+<td>0.341431</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">content, exploratory only</th>
+<td>0.880597</td>
+<td>0.464886</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">hybrid, exploratory only</th>
+<td>0.766169</td>
+<td>0.275743</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Diversifying genuinely costs hit-rate on <code>exploratory</code> queries specifically. That needs to be named plainly, not hidden: this is a real tradeoff, not a free improvement. But a lower score here doesn’t necessarily mean worse recommendations. This metric rewards recommending exactly what got clicked historically, and what got clicked historically was shaped by whatever ranking Elo7’s own search already showed people, a homogeneous, exposure-biased sample by construction. A metric built entirely from historical exposure can’t tell “a good, diverse recommendation the old ranking never surfaced” apart from “a bad recommendation,” it only rewards matching the old ranking’s behavior. The qualitative case in §5, real category spread, still-high similarity scores, is the actual justification for keeping the intent-aware cap; the recall drop is a known, explained cost, not something to optimize away by reverting the decision. Deeper, more formal evaluation is notebook 06’s job; this notebook states the tension and moves on.</p>
+</section>
+<section id="handling-the-edge-case-queries-with-no-vocabulary-overlap-at-all" class="level2">
+<h2 class="anchored" data-anchor-id="handling-the-edge-case-queries-with-no-vocabulary-overlap-at-all">7. Handling the edge case: queries with no vocabulary overlap at all</h2>
+<p>Every product-similarity score is computed from shared vocabulary. A query with zero words in the catalog’s TF-IDF vocabulary gets all-zero similarity against every product, an undefined ranking if left unhandled.</p>
+<div id="16f85503" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:15.194367Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:15.194284Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:15.201736Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:15.201465Z&quot;}}" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>oov_query <span class="op">=</span> <span class="st">"xyzabc123nonsense"</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> content_scores(oov_query, catalog)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"max similarity for a nonsense query: </span><span class="sc">{</span>scores<span class="sc">.</span><span class="bu">max</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>recommend_content(oov_query, catalog, k<span class="op">=</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>max similarity for a nonsense query: 0.0</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">product_id</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">category</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>15722213</td>
+<td>Tapete simples em croche</td>
+<td>Decoração</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>6977307</td>
+<td>Bolsa Maternidade Rose kit 4 peças mala bebe</td>
+<td>Bebê</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>9836291</td>
+<td>kit bolsa mala bebe maternidade personalizada</td>
+<td>Bebê</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>9730357</td>
+<td>Saída Maternidade Menina Anny 5 peças Salmão</td>
+<td>Bebê</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>8271183</td>
+<td>Mini suculentas - PROMOÇÃO</td>
+<td>Lembrancinhas</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p><code>recommend_content</code> and <code>recommend_hybrid</code> both fall back to the popularity ranking whenever the maximum similarity is zero, rather than returning an arbitrary top-k tie-broken by row order. Checked against the same 500-query sample, this is rare but real: <strong>1 in 500</strong> eligible historical queries had zero similarity to the entire catalog. Worth handling explicitly, not worth over-engineering.</p>
+</section>
+<section id="recommendation-examples" class="level2">
+<h2 class="anchored" data-anchor-id="recommendation-examples">8. Recommendation examples</h2>
+<p>A small, varied set of queries, a mix of predicted intents, a few different categories, and the out-of-vocabulary case, to see the finished recommender’s actual behavior end to end rather than only its aggregate metrics.</p>
+<div id="007ca595" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:15.202461Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:15.202380Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:15.221827Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:15.221557Z&quot;}}" data-execution_count="14">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>example_queries <span class="op">=</span> [</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"anel de prata"</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"dia dos pais"</span>,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"presente criativo original"</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"tapete de croche"</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"xyzabc123nonsense"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> query <span class="kw">in</span> example_queries:</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    intent <span class="op">=</span> intent_pipeline.predict([joined_tokens(query)])[<span class="dv">0</span>]</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> recommend_hybrid(query, catalog, intent_pipeline, k<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">'</span><span class="sc">{</span>query<span class="sc">}</span><span class="ss">'  (predicted intent: </span><span class="sc">{</span>intent<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(result[[<span class="st">"title"</span>, <span class="st">"category"</span>]].to_string(index<span class="op">=</span><span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+'anel de prata'  (predicted intent: specific)
+                                                title           category
+                               Anel Claddagh em Prata Bijuterias e Jóias
+                               Anel Trançado em Prata Bijuterias e Jóias
+                               Anel em prata maleável Bijuterias e Jóias
+Anel de Prata Letras - Anel de Prata Feminino Letra L Bijuterias e Jóias
+           Anel 4 Safiras em PRATA 925 - FRETE GRÁTIS Bijuterias e Jóias
+
+'dia dos pais'  (predicted intent: exploratory)
+                    title      category
+             Dia dos pais Lembrancinhas
+             Dia dos Pais Lembrancinhas
+Lembrancinha Dia dos Pais        Outros
+Lembrancinha Dia dos Pais        Outros
+       Caixa Dia dos Pais   Papel e Cia
+
+'presente criativo original'  (predicted intent: exploratory)
+                                                      title           category
+ Presente Criativo Dia dos Pais Poster/Quadro A4- 21x29,8cm      Lembrancinhas
+      Presente Criativo Personalizado Formatura Biomedicina          Decoração
+ Presente namorado Personalizado dia dos namorados criativo          Decoração
+Presente Criativo Placa personalizada com foto dia dos Pais      Lembrancinhas
+                       Pulseira masculina em couro original Bijuterias e Jóias
+
+'tapete de croche'  (predicted intent: specific)
+           title  category
+Tapete de Crochê Decoração
+Tapete de croche Decoração
+Tapete de crochê Decoração
+Tapete de Crochê Decoração
+Tapete de crochê Decoração
+
+'xyzabc123nonsense'  (predicted intent: exploratory)
+                                        title      category
+                     Tapete simples em croche     Decoração
+ Bolsa Maternidade Rose kit 4 peças mala bebe          Bebê
+kit bolsa mala bebe maternidade personalizada          Bebê
+ Saída Maternidade Menina Anny 5 peças Salmão          Bebê
+                   Mini suculentas - PROMOÇÃO Lembrancinhas</code></pre>
+</div>
+</div>
+<p>The pattern holds across all five: tight, single-category results for narrowly-worded queries, visibly broader category spread for the occasion-style query, and a graceful drop to the popularity ranking for the nonsense query rather than an error or a meaningless result.</p>
+</section>
+<section id="key-findings-handoff" class="level2">
+<h2 class="anchored" data-anchor-id="key-findings-handoff">9. Key findings &amp; handoff</h2>
+<p><strong>What was built</strong>: a popularity baseline, a content-based recommender (TF-IDF cosine similarity, reusing notebook 02’s fitted vectorizer rather than a new one), and an intent-aware hybrid that diversifies category coverage for <code>exploratory</code> queries while leaving <code>specific</code> queries untouched.</p>
+<p><strong>What we learned:</strong></p>
+<ul>
+<li>Content similarity clears the popularity baseline by a wide margin on historical-click hit-rate (86% vs.&nbsp;1.4%), strong evidence it belongs at the core of the recommender, not an assumption.</li>
+<li>Pure content similarity has a real, visible failure mode for broad queries: near-duplicate, single-category results that don’t reflect how such queries actually behave historically. Category-capping the top-10, but only for queries the intent classifier predicts as <code>exploratory</code>, fixes this concretely without degrading the many queries that don’t need it.</li>
+<li>That fix has a real, named cost: hit-rate against the historical-click proxy drops for <code>exploratory</code> queries. This is stated plainly rather than optimized away, because the metric itself is biased toward matching a search ranking this project had no part in and no way to independently judge.</li>
+<li>A rare (1 in 500) but real edge case, queries with zero catalog vocabulary overlap, needs an explicit fallback rather than silent undefined behavior.</li>
+</ul>
+<p><strong>Scope boundary restated</strong>: this recommender has no notion of predicted <code>category</code> yet. Notebook 05 adds that once it solves “classify a query as if it were a product, without numeric features,” the problem the spec keeps distinct from product classification itself.</p>
+<p><strong>Saved for notebook 05 (System Integration):</strong></p>
+<div id="bfd41771" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T18:04:15.222766Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T18:04:15.222681Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T18:04:15.324423Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T18:04:15.323989Z&quot;}}" data-execution_count="15">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> sparse</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>data_dir <span class="op">=</span> Path(<span class="st">"../data/processed"</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>sparse.save_npz(data_dir <span class="op">/</span> <span class="st">"04_product_vectors.npz"</span>, catalog.text_matrix)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>feature_catalog <span class="op">=</span> [</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"similarity"</span>, <span class="st">"numerical"</span>, <span class="st">"engineered"</span>, <span class="st">"product_text, query"</span>, <span class="st">"Cosine similarity between a query and a product's TF-IDF vector."</span>),</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"category_cap"</span>, <span class="st">"categorical"</span>, <span class="st">"engineered"</span>, <span class="st">"intent"</span>, <span class="st">"Per-category cap on top-10 results, applied only when predicted intent is exploratory."</span>),</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>df_features <span class="op">=</span> pd.DataFrame(feature_catalog, columns<span class="op">=</span>[<span class="st">"Name"</span>, <span class="st">"Type"</span>, <span class="st">"Category"</span>, <span class="st">"Source"</span>, <span class="st">"Description"</span>])</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>df_features.to_parquet(data_dir <span class="op">/</span> <span class="st">"04_features.parquet"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"saved ../data/processed/04_product_vectors.npz (cached product TF-IDF matrix)"</span>)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"saved </span><span class="sc">{</span><span class="bu">len</span>(df_features)<span class="sc">}</span><span class="ss"> feature rows -&gt; data/processed/04_features.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>saved ../data/processed/04_product_vectors.npz (cached product TF-IDF matrix)
+saved 2 feature rows -&gt; data/processed/04_features.parquet</code></pre>
+</div>
+</div>
+<p>No new <code>.joblib</code> model: nothing in this notebook is <em>fit</em> beyond what notebooks 02 and 03 already produced, <code>src/models/recommender.py</code>’s functions are assembled from their outputs, so notebook 05 only needs the recommender module, the cached product vectors, and the two existing classifier artifacts.</p>
+</section>
+<section id="closing-remarks" class="level2">
+<h2 class="anchored" data-anchor-id="closing-remarks">Closing remarks</h2>
+<p>This notebook built a recommender around one central finding: content similarity dominates popularity for matching a query to relevant products, but on its own it can be too narrow for broad, exploratory searches. Folding in notebook 03’s intent classifier fixes that concretely, at a real, stated cost against a proxy metric that itself has a known bias toward historical exposure rather than genuine recommendation quality.</p>
+<p>The <a href="../notebooks/05_system_integration.html">next notebook</a> wires this recommender together with the product and intent classifiers into a single system that takes an arbitrary query and returns predicted category, predicted intent, and the top-10 recommendations, including the query -&gt; category step this notebook deliberately left out.</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

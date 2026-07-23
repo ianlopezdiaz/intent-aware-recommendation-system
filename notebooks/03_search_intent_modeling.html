@@ -78,8 +78,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-6b6957c917596b414ec0b78690761e87.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3029e7e195d8e149f4708ed6e6ea6f46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-45530282dfcbb60aa45e6cc5bdc99add.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-8262f2511af8a51d287c26da9595b204.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-198293974897f3d9a3d0b581c8f06b26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -409,7 +409,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This is the third notebook in the rewrite of the 2021 Elo7 Data Science take-home challenge (full problem statement: <a href="../docs/elo7-ds-challenge-en.html"><code>../docs/elo7-ds-challenge-en.md</code></a>; notebook 01: <a href="../notebooks/01_exploratory_data_analysis.html"><code>01_exploratory_data_analysis.ipynb</code></a>; notebook 02: <a href="../notebooks/02_product_classification.html"><code>02_product_classification.ipynb</code></a>). Unlike notebooks 01 and 02, there’s no 2021 version of this notebook to build on: <code>03_termo_de_busca.ipynb</code> in the original repository is a title and nothing else, the point at which that take-home was abandoned.</p>
+<p>This is the third notebook in the Elo7 Data Science Challenge project (full problem statement: <a href="../docs/elo7-ds-challenge-en.html"><code>../docs/elo7-ds-challenge-en.md</code></a>; notebook 01: <a href="../notebooks/01_exploratory_data_analysis.html"><code>01_exploratory_data_analysis.ipynb</code></a>; notebook 02: <a href="../notebooks/02_product_classification.html"><code>02_product_classification.ipynb</code></a>). There’s no prior work to build on here the way notebooks 01 and 02 could lean on established EDA/classification technique: search intent has no ground-truth labels and no standard definition, so this notebook has to define, justify, and validate its own methodology from scratch.</p>
 <section id="the-task" class="level2">
 <h2 class="anchored" data-anchor-id="the-task">The task</h2>
 <p>Part 3 asks for a classifier that sorts <strong>search queries</strong>, not products, into at least two user-intent classes. Critically, <strong>no ground-truth intent labels exist anywhere in the dataset</strong>: the classes have to be defined by us, and justified, not assumed. The spec is explicit that this is primarily an unsupervised problem, but also explicitly allows a supervised reformulation if we devise and justify our own labeling strategy, which is the path this notebook takes.</p>
@@ -441,7 +441,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">1. Setup</h2>
 <p>We load the same cleaned dataset notebook 01 persisted, but <strong>at click level</strong>, not deduplicated to products. This is the opposite grain choice from notebook 02: there, repeat clicks on the same product were redundant information to collapse away. Here, repeat clicks on the same <em>query</em> are exactly the behavioral signal this notebook needs, how consistently a query’s clicks land in one category or scatter across several.</p>
-<div id="e2413359" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:01.940481Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:01.939996Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:02.767804Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:02.767491Z&quot;}}" data-execution_count="2">
+<div id="e2413359" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:39.492513Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:39.492072Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:40.332187Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:40.331906Z&quot;}}" data-execution_count="1">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -493,7 +493,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="how-much-click-history-does-a-query-need" class="level2">
 <h2 class="anchored" data-anchor-id="how-much-click-history-does-a-query-need">2. How much click history does a query need?</h2>
 <p>A query’s <code>top_share</code> is only a meaningful behavioral signal if it has enough clicks to estimate from. A 1-click query is trivially “100% coherent” by construction, not because it’s genuinely specific. We compare candidate minimum-click thresholds directly, on both how many distinct queries they retain and how much of the dataset’s actual click volume they cover.</p>
-<div id="0296a45a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:02.769152Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:02.768992Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:02.783977Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:02.783791Z&quot;}}" data-execution_count="3">
+<div id="0296a45a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:40.333563Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:40.333386Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:40.349666Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:40.349475Z&quot;}}" data-execution_count="2">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>clicks_per_query <span class="op">=</span> df.groupby(<span class="st">"query"</span>).size()</span>
@@ -515,7 +515,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>coverage_df <span class="op">=</span> pd.DataFrame(coverage).set_index(<span class="st">"min_clicks"</span>)</span>
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>coverage_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
@@ -585,7 +585,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="6a5a0d3d" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:02.785053Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:02.784962Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:02.861763Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:02.861418Z&quot;}}" data-execution_count="4">
+<div id="6a5a0d3d" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:40.350768Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:40.350679Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:40.428730Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:40.428492Z&quot;}}" data-execution_count="3">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
@@ -612,7 +612,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="category-coherence-per-query" class="level2">
 <h2 class="anchored" data-anchor-id="category-coherence-per-query">3. Category coherence per query</h2>
 <p>With the threshold set, we compute <code>top_share</code> for every eligible query and look at its distribution.</p>
-<div id="8911b588" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:02.863040Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:02.862951Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:03.239227Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:03.238899Z&quot;}}" data-execution_count="5">
+<div id="8911b588" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:40.429732Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:40.429647Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:40.814150Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:40.813845Z&quot;}}" data-execution_count="4">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>eligible <span class="op">=</span> clicks_per_query[clicks_per_query <span class="op">&gt;=</span> MIN_CLICKS_FOR_DISCOVERY].index</span>
@@ -628,7 +628,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>3,953 eligible queries</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>count    3953.000000
 mean        0.878847
 std         0.171833
@@ -640,7 +640,7 @@ max         1.000000
 Name: top_share, dtype: float64</code></pre>
 </div>
 </div>
-<div id="6c516d74" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:03.240601Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:03.240499Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:03.320525Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:03.320187Z&quot;}}" data-execution_count="6">
+<div id="6c516d74" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:40.815217Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:40.815125Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:40.891319Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:40.891069Z&quot;}}" data-execution_count="5">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
@@ -662,7 +662,7 @@ Name: top_share, dtype: float64</code></pre>
 </div>
 </div>
 <p>A dense spike at <code>top_share == 1.0</code> (every click landed in the same category), then a long, thinning tail down toward 0.25 (the minimum possible with <code>&gt;= 3</code> clicks split across up to 4 categories). There’s no dramatic second mode, coherence is a spectrum here, not two obviously separate populations, which is exactly why picking a threshold needs justification rather than being visually obvious. Two concrete examples anchor the extremes:</p>
-<div id="9f7889d5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:03.321533Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:03.321449Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:03.325703Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:03.325526Z&quot;}}" data-execution_count="7">
+<div id="9f7889d5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:40.892244Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:40.892163Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:40.896438Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:40.896121Z&quot;}}" data-execution_count="6">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>examples <span class="op">=</span> query_level.sort_values(<span class="st">"top_share"</span>)</span>
@@ -670,7 +670,7 @@ Name: top_share, dtype: float64</code></pre>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>most_specific <span class="op">=</span> examples[examples[<span class="st">"n_clicks"</span>] <span class="op">&gt;=</span> <span class="dv">10</span>].sort_values(<span class="st">"top_share"</span>, ascending<span class="op">=</span><span class="va">False</span>).iloc[[<span class="dv">0</span>]]</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>pd.concat([most_exploratory, most_specific])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <div>
 
 
@@ -707,7 +707,7 @@ Name: top_share, dtype: float64</code></pre>
 <section id="finding-the-threshold" class="level2">
 <h2 class="anchored" data-anchor-id="finding-the-threshold">4. Finding the threshold</h2>
 <p>The histogram in §3 suggests a round <strong>0.8</strong> cutoff: coherence is dense near 1.0 and thins out below roughly that point. But “the histogram looks like it bends around there” isn’t a justification on its own. We check it against an actual unsupervised method: <code>KMeans(k=2)</code> on <code>top_share</code> alone, which finds its own boundary with no threshold specified at all.</p>
-<div id="d2f40e6a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:03.326727Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:03.326646Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:03.390920Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:03.390499Z&quot;}}" data-execution_count="8">
+<div id="d2f40e6a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:40.897684Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:40.897598Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:40.956979Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:40.956511Z&quot;}}" data-execution_count="7">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> query_level[[<span class="st">"top_share"</span>]].to_numpy()</span>
@@ -733,13 +733,13 @@ agreement between KMeans boundary (0.814) and manual threshold (0.8): 96.9%</cod
 </div>
 </div>
 <p><code>KMeans</code> independently lands on a boundary of ~0.81, just one point from the manual 0.8, and the two labelings agree on 97% of queries. That’s the validation this notebook needed: 0.8 isn’t an arbitrary round number, it’s within noise of what an actual clustering algorithm finds on its own. We keep 0.8 as the threshold used everywhere from here on, since it’s simpler to state and explain, and the residual disagreement traces to <code>top_share</code> only taking a few discrete values at small click counts (0.8 exactly is only reachable at click counts like 5, 10, 15, …), not to the two methods genuinely disagreeing about where the boundary roughly sits.</p>
-<div id="82150eaf" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:03.392510Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:03.392321Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:03.398207Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:03.397808Z&quot;}}" data-execution_count="9">
+<div id="82150eaf" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:40.958473Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:40.958355Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:40.962682Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:40.962378Z&quot;}}" data-execution_count="8">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>query_level[<span class="st">"intent"</span>] <span class="op">=</span> np.where(query_level[<span class="st">"top_share"</span>] <span class="op">&gt;=</span> TOP_SHARE_THRESHOLD, <span class="st">"specific"</span>, <span class="st">"exploratory"</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>query_level[<span class="st">"intent"</span>].value_counts(normalize<span class="op">=</span><span class="va">True</span>).mul(<span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>intent
 specific       72.4
 exploratory    27.6
@@ -751,7 +751,7 @@ Name: proportion, dtype: float64</code></pre>
 <h2 class="anchored" data-anchor-id="is-this-a-real-distinct-signal">5. Is this a real, distinct signal?</h2>
 <p>Two checks, against two signals this project has already computed elsewhere, to make sure <code>top_share</code> isn’t just quietly re-measuring something we already have.</p>
 <p><strong>Against notebook 01’s query-title word overlap.</strong> Notebook 01 found that the median query shares 100% of its words with the title of the product it clicked, but 9% of clicks share no words at all, a <em>lexical</em> specificity signal. Is that the same thing as behavioral category coherence?</p>
-<div id="34114a12" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:03.399604Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:03.399439Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:03.622765Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:03.622285Z&quot;}}" data-execution_count="10">
+<div id="34114a12" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:40.964022Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:40.963925Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:41.185574Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:41.185268Z&quot;}}" data-execution_count="9">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> query_title_overlap(query, title):</span>
@@ -775,7 +775,7 @@ Name: proportion, dtype: float64</code></pre>
 </div>
 <p>Essentially zero. A query can be lexically identical to the titles it leads to while still having its clicks scattered across several categories, and vice versa. These are two different constructs: one is about matching words, the other is about where clicks actually land.</p>
 <p><strong>Against price dispersion.</strong> The methodology note behind this notebook flagged one example, <code>bolsa maternidade</code> (“maternity bag”), as 98% one category but with unusually wide price spread. Is that a coincidence, or does it hold at scale?</p>
-<div id="6c9c9a2c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:03.623851Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:03.623770Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:03.630511Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:03.630103Z&quot;}}" data-execution_count="11">
+<div id="6c9c9a2c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:41.186652Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:41.186570Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:41.192803Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:41.192622Z&quot;}}" data-execution_count="10">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>price_stats <span class="op">=</span> sub.groupby(<span class="st">"query"</span>)[<span class="st">"price"</span>].agg([<span class="st">"mean"</span>, <span class="st">"std"</span>]).reset_index()</span>
@@ -795,7 +795,7 @@ Name: proportion, dtype: float64</code></pre>
 <h2 class="anchored" data-anchor-id="generalizing-to-unseen-queries-the-stage-2-classifier">6. Generalizing to unseen queries: the stage-2 classifier</h2>
 <p>Stage 1 only labels queries with enough click history. The finished system needs to handle <strong>any</strong> query, so we train a text-only classifier on the stage-1 labels and evaluate how well it recovers them from query text alone. Several choices below are shown as real comparisons, the way notebook 02 compared vectorizers and models, not asserted.</p>
 <p>First, does the minimum-click threshold from §2 actually change how learnable the labels are?</p>
-<div id="1479e787" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:03.631319Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:03.631244Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:04.789671Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:04.789226Z&quot;}}" data-execution_count="12">
+<div id="1479e787" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:41.193857Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:41.193775Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:42.358153Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:42.357854Z&quot;}}" data-execution_count="11">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_labels(min_clicks):</span>
@@ -821,7 +821,7 @@ Name: proportion, dtype: float64</code></pre>
 <span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(threshold_results).T</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="12">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <div>
 
 
@@ -861,7 +861,7 @@ Name: proportion, dtype: float64</code></pre>
 </div>
 <p><code>&gt;= 3</code> clicks gives a clearly more learnable label set than <code>&gt;= 2</code> (noisier <code>top_share</code> estimates make for noisier labels), and does about as well as <code>&gt;= 5</code> while keeping substantially more training data. This confirms the choice made in §2 on classifier performance grounds, not just coverage.</p>
 <p>Next, does adding bigrams to the text vectorizer help, the way it didn’t for notebook 02’s product text?</p>
-<div id="adf72548" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:04.790691Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:04.790607Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:05.196970Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:05.196566Z&quot;}}" data-execution_count="13">
+<div id="adf72548" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:42.359181Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:42.359089Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:42.773701Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:42.773375Z&quot;}}" data-execution_count="12">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ql <span class="op">=</span> build_labels(MIN_CLICKS_FOR_DISCOVERY)</span>
@@ -882,7 +882,7 @@ Name: proportion, dtype: float64</code></pre>
 <span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(ngram_results).T</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <div>
 
 
@@ -913,7 +913,7 @@ Name: proportion, dtype: float64</code></pre>
 </div>
 <p>Bigrams do measurably help here, unlike in notebook 02. That’s a real difference between the two text problems, not an inconsistency: query text is short (median 3 words) and phrase patterns like “dia dos” (part of “dia dos pais,” Father’s Day) carry information a single-word “dia” doesn’t. <code>build_pipeline</code> (<code>src/models/intent.py</code>) uses <code>ngram_range=(1, 2)</code>.</p>
 <p>Finally, does weighting the minority <code>exploratory</code> class change anything worth trading for?</p>
-<div id="ce5a89ce" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:05.197837Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:05.197755Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:05.237805Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:05.237442Z&quot;}}" data-execution_count="14">
+<div id="ce5a89ce" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:42.774744Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:42.774657Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:42.814628Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:42.814360Z&quot;}}" data-execution_count="13">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>tfidf <span class="op">=</span> TfidfVectorizer(min_df<span class="op">=</span><span class="dv">2</span>, ngram_range<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
@@ -934,7 +934,7 @@ Name: proportion, dtype: float64</code></pre>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(weight_results).T</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="14">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <div>
 
 
@@ -968,7 +968,7 @@ Name: proportion, dtype: float64</code></pre>
 </div>
 <p><code>class_weight="balanced"</code> trades some accuracy for a large jump in recall on <code>exploratory</code>, the minority class. Given this project has consistently used macro-F1, not accuracy, as the metric for imbalanced classification (see notebook 02), that trade is worth taking, even though this imbalance (~2.7:1) is much milder than notebook 02’s (~15:1).</p>
 <p>One more thing worth trying and reporting even though it didn’t help, in the spirit of documenting what doesn’t work: does adding query word-count as an extra numeric feature move the needle, the way notebook 02 tested text+numeric combinations?</p>
-<div id="c9e8604c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:05.238761Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:05.238689Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:05.259747Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:05.259484Z&quot;}}" data-execution_count="15">
+<div id="c9e8604c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:42.815596Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:42.815511Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:42.836378Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:42.836199Z&quot;}}" data-execution_count="14">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> sparse</span>
@@ -1003,7 +1003,7 @@ text + n_words    : macro-F1 = 0.677</code></pre>
 <section id="final-model-evaluation" class="level2">
 <h2 class="anchored" data-anchor-id="final-model-evaluation">7. Final model evaluation</h2>
 <p>The chosen pipeline: <code>&gt;= 3</code>-click labels, TF-IDF (unigrams + bigrams), <code>LinearSVC</code> with balanced class weights, exactly <code>src.models.intent.build_pipeline</code>. We compare it against a majority-class dummy baseline, the honest “is this actually better than guessing the bigger class every time” check.</p>
-<div id="b02fe0c6" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:05.260619Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:05.260540Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:05.289690Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:05.289422Z&quot;}}" data-execution_count="16">
+<div id="b02fe0c6" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:42.837310Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:42.837229Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:42.866295Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:42.866068Z&quot;}}" data-execution_count="15">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>final_pipeline <span class="op">=</span> build_pipeline()</span>
@@ -1033,7 +1033,7 @@ accuracy  : 0.714  (dummy baseline: 0.724)</code></pre>
 </div>
 </div>
 <p>A real, meaningful lift over the dummy baseline (macro-F1 roughly 0.68 vs.&nbsp;0.42), but this is markedly weaker than notebook 02’s product classifier (macro-F1 0.85 from product text alone). That gap is this notebook’s central honest finding, not a shortcoming to explain away: a product’s own title and tags describe the product directly, while a search query is a much noisier proxy for the click-scattering <em>behavior</em> that defines intent here. Query text only partially recovers it.</p>
-<div id="4e0e2503" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:05.290566Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:05.290487Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:05.329165Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:05.328951Z&quot;}}" data-execution_count="17">
+<div id="4e0e2503" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:42.867259Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:42.867170Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:42.903853Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:42.903643Z&quot;}}" data-execution_count="16">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [<span class="st">"exploratory"</span>, <span class="st">"specific"</span>]</span>
@@ -1056,7 +1056,7 @@ accuracy  : 0.714  (dummy baseline: 0.724)</code></pre>
 </div>
 <p>Errors run in both directions, consistent with a classifier that’s genuinely trying rather than defaulting to the majority class, but far from perfect in either direction.</p>
 <p>A capped look at which terms push the model each way:</p>
-<div id="784231c0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:05.330217Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:05.330125Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:05.333160Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:05.332672Z&quot;}}" data-execution_count="18">
+<div id="784231c0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:42.904989Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:42.904909Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:42.907448Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:42.907194Z&quot;}}" data-execution_count="17">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> final_pipeline.named_steps[<span class="st">"classify"</span>].coef_[<span class="dv">0</span>]</span>
@@ -1101,7 +1101,7 @@ toward specific:
 <section id="applying-the-classifier-to-every-query" class="level2">
 <h2 class="anchored" data-anchor-id="applying-the-classifier-to-every-query">8. Applying the classifier to every query</h2>
 <p>The whole point of the two-stage design was to handle queries with no click history. We now use the fitted pipeline, refit on all labeled queries, to assign an intent label to <strong>every</strong> distinct query in the dataset, including the 2,439 that fell below the <code>&gt;= 3</code>-click discovery threshold and never got a stage-1 label at all.</p>
-<div id="161e375c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:05.334352Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:05.334228Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:05.400033Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:05.399728Z&quot;}}" data-execution_count="19">
+<div id="161e375c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:42.908459Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:42.908377Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:42.972213Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:42.971984Z&quot;}}" data-execution_count="18">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>all_queries <span class="op">=</span> df[[<span class="st">"query"</span>]].drop_duplicates().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
@@ -1127,14 +1127,14 @@ toward specific:
 <div class="cell-output cell-output-stdout">
 <pre><code>6,392 distinct queries labeled</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>label_source
 discovery     3953
 classifier    2439
 Name: count, dtype: int64</code></pre>
 </div>
 </div>
-<div id="01b3edc5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:05.401074Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:05.400994Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:05.405087Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:05.404931Z&quot;}}" data-execution_count="20">
+<div id="01b3edc5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:42.973263Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:42.973172Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:42.977093Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:42.976924Z&quot;}}" data-execution_count="19">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>full_dist <span class="op">=</span> all_queries[<span class="st">"intent"</span>].value_counts(normalize<span class="op">=</span><span class="va">True</span>).mul(<span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
@@ -1143,7 +1143,7 @@ Name: count, dtype: int64</code></pre>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>comparison <span class="op">=</span> pd.DataFrame({<span class="st">"discovery-labeled subset"</span>: labeled_dist, <span class="st">"all queries"</span>: full_dist})</span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>comparison</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="20">
+<div class="cell-output cell-output-display" data-execution_count="19">
 <div>
 
 
@@ -1195,7 +1195,7 @@ Name: count, dtype: int64</code></pre>
 <li>Bigrams measurably help for this short, phrase-sensitive query text, unlike for notebook 02’s longer product text; query word-count as an added numeric feature does not help at all.</li>
 </ul>
 <p><strong>Saved for notebook 05 (System Integration):</strong></p>
-<div id="4ff4d73e" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T14:37:05.406078Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T14:37:05.406002Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T14:37:05.418758Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T14:37:05.418488Z&quot;}}" data-execution_count="21">
+<div id="4ff4d73e" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T17:30:42.978075Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T17:30:42.978001Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T17:30:42.991192Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T17:30:42.990918Z&quot;}}" data-execution_count="20">
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> joblib</span>
