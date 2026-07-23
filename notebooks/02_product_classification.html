@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>product_classification – Intent-Aware Recommendation System</title>
+<title>Product Classification – Intent-Aware Recommendation System</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,10 +23,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -43,8 +78,8 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-6b6957c917596b414ec0b78690761e87.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-8262f2511af8a51d287c26da9595b204.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-198293974897f3d9a3d0b581c8f06b26.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-3029e7e195d8e149f4708ed6e6ea6f46.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-45530282dfcbb60aa45e6cc5bdc99add.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,6 +107,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -326,18 +364,729 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-task" id="toc-the-task" class="nav-link active" data-scroll-target="#the-task">The task</a></li>
+  <li><a href="#two-scope-decisions-made-up-front" id="toc-two-scope-decisions-made-up-front" class="nav-link" data-scroll-target="#two-scope-decisions-made-up-front">Two scope decisions, made up front</a></li>
+  <li><a href="#questions-this-notebook-answers" id="toc-questions-this-notebook-answers" class="nav-link" data-scroll-target="#questions-this-notebook-answers">Questions this notebook answers</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">1. Setup</a></li>
+  <li><a href="#deduplicating-to-product-level" id="toc-deduplicating-to-product-level" class="nav-link" data-scroll-target="#deduplicating-to-product-level">2. Deduplicating to product level</a></li>
+  <li><a href="#target-distribution-and-traintest-split" id="toc-target-distribution-and-traintest-split" class="nav-link" data-scroll-target="#target-distribution-and-traintest-split">3. Target distribution and train/test split</a></li>
+  <li><a href="#numeric-only-baseline" id="toc-numeric-only-baseline" class="nav-link" data-scroll-target="#numeric-only-baseline">4. Numeric-only baseline</a></li>
+  <li><a href="#text-vectorization-tf-idf-or-hashing" id="toc-text-vectorization-tf-idf-or-hashing" class="nav-link" data-scroll-target="#text-vectorization-tf-idf-or-hashing">5. Text vectorization: TF-IDF or hashing?</a></li>
+  <li><a href="#combined-model-comparison" id="toc-combined-model-comparison" class="nav-link" data-scroll-target="#combined-model-comparison">6. Combined model comparison</a></li>
+  <li><a href="#best-model-deep-dive" id="toc-best-model-deep-dive" class="nav-link" data-scroll-target="#best-model-deep-dive">7. Best model deep dive</a></li>
+  <li><a href="#key-findings-handoff" id="toc-key-findings-handoff" class="nav-link" data-scroll-target="#key-findings-handoff">8. Key findings &amp; handoff</a></li>
+  <li><a href="#closing-remarks" id="toc-closing-remarks" class="nav-link" data-scroll-target="#closing-remarks">Closing remarks</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Product Classification</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<p>This is the second notebook in the rewrite of the 2021 Elo7 Data Science take-home challenge (full problem statement: <a href="../docs/elo7-ds-challenge-en.html"><code>../docs/elo7-ds-challenge-en.md</code></a>; notebook 01: <a href="../notebooks/01_exploratory_data_analysis.html"><code>01_exploratory_data_analysis.ipynb</code></a>).</p>
+<section id="the-task" class="level2">
+<h2 class="anchored" data-anchor-id="the-task">The task</h2>
+<p>Part 2 of the challenge asks for a <strong>supervised</strong> proof-of-concept classifier that assigns a product to its <code>category</code>, using at least one text feature and one numeric feature. The spec is explicit that raw predictive performance isn’t the point: “we are primarily interested in understanding your reasoning and methodology,” including approaches that didn’t work.</p>
+</section>
+<section id="two-scope-decisions-made-up-front" class="level2">
+<h2 class="anchored" data-anchor-id="two-scope-decisions-made-up-front">Two scope decisions, made up front</h2>
+<p>The 2021 version of this notebook made a choice worth revisiting before writing any code: it used the search <code>query</code> as the text feature, reasoning ahead to the fact that the eventual system (Part 5) only ever receives a query at inference time, not a product’s tags. This notebook makes the opposite choice, for two reasons:</p>
+<ol type="1">
+<li><strong>The spec keeps these problems separate.</strong> Part 5 explicitly calls out “classify a query as if it were a product… no numerical features are available; you should explore how to handle this limitation” as its own problem, distinct from Part 2. Solving it here would be answering a question this notebook wasn’t asked.</li>
+<li><strong><code>title</code> and <code>concatenated_tags</code> are the product’s actual description.</strong> They’re richer, longer, and (per notebook 01) verified stable per product, unlike a search query, which is a <em>behavioral</em> signal (what someone typed to find this product), not a description of the product itself.</li>
+</ol>
+<p>So: <strong>this notebook classifies products using <code>title</code> + <code>concatenated_tags</code> as the text feature.</strong> Notebook 05 (System Integration) picks up the harder “classify a query as if it were a product, without numeric features” problem, exactly where the spec puts it.</p>
+<p>The second decision concerns <em>what a row is</em>. Notebook 01 established that a row is a click, not a product (29,801 distinct products across 38,507 rows). This notebook deduplicates to one row per product before doing anything else; the reasoning is laid out in full in §2.</p>
+</section>
+<section id="questions-this-notebook-answers" class="level2">
+<h2 class="anchored" data-anchor-id="questions-this-notebook-answers">Questions this notebook answers</h2>
+<ol type="1">
+<li><strong>Deduplication</strong>: how much does collapsing clicks to products change the data, and does it change the category imbalance we need to design around?</li>
+<li><strong>Numeric-only baseline</strong>: how well does a classifier do with only the product’s numeric attributes, and which of them actually matter?</li>
+<li><strong>Text vectorization</strong>: TF-IDF or the hashing trick, and why did the 2021 notebook get this comparison wrong?</li>
+<li><strong>Combined model comparison</strong>: text and numeric features together, across a few algorithms, with and without feature scaling.</li>
+<li><strong>Best model deep dive</strong>: is the default hyperparameter already good, and which categories does the winning model still confuse?</li>
+<li><strong>Key findings &amp; handoff</strong>: what gets saved for notebook 05?</li>
+</ol>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">1. Setup</h2>
+<p>We load the cleaned dataset notebook 01 persisted (<code>src.data.load.load_processed_dataset</code>), rather than re-deriving it from the raw CSV as the 2021 notebook did. Text and modeling helpers come from <code>src.features.text</code> and <code>src.models.classifier</code>, so the pipeline built here is the same one notebook 05 will load, not a one-off.</p>
+<div id="aebf85b9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:35.056863Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:35.056068Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:36.197516Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:36.196654Z&quot;}}" data-execution_count="2">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> sparse</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction <span class="im">import</span> FeatureHasher</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> SimpleImputer</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.inspection <span class="im">import</span> permutation_importance</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> (</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    ConfusionMatrixDisplay,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    accuracy_score,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    classification_report,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    confusion_matrix,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    f1_score,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> RandomizedSearchCV, train_test_split</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> LinearSVC</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.load <span class="im">import</span> load_processed_dataset</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.preprocess <span class="im">import</span> deduplicate_products</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.features.text <span class="im">import</span> joined_tokens</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.models.classifier <span class="im">import</span> NUMERIC_FEATURES, TEXT_FEATURE, build_pipeline</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>PRIMARY <span class="op">=</span> <span class="st">"#2a78d6"</span>  <span class="co"># Blue, the default single hue for magnitude comparisons.</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>SECONDARY <span class="op">=</span> <span class="st">"#eb6834"</span>  <span class="co"># Orange, the second series whenever a chart compares exactly two things.</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.dpi"</span>] <span class="op">=</span> <span class="dv">110</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"axes.spines.top"</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"axes.spines.right"</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>RANDOM_STATE <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_processed_dataset(<span class="st">"01_data.parquet"</span>)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>df<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">:,}</span><span class="ss"> rows x </span><span class="sc">{</span>df<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> columns"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>38,480 rows x 24 columns</code></pre>
+</div>
+</div>
+</section>
+<section id="deduplicating-to-product-level" class="level2">
+<h2 class="anchored" data-anchor-id="deduplicating-to-product-level">2. Deduplicating to product level</h2>
+<p>Notebook 01’s finding was that a row is a click, not a product. For Part 2’s actual task, “product -&gt; category”, repeat clicks on the same product are not new information for <code>category</code>, <code>title</code>, or <code>concatenated_tags</code>; they’re the same product, described the same way, clicked more than once. Before splitting anything, we verify that directly:</p>
+<div id="d47aa640" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:36.200993Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:36.200485Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:36.248872Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:36.248548Z&quot;}}" data-execution_count="3">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>constant_check <span class="op">=</span> df.groupby(<span class="st">"product_id"</span>)[[<span class="st">"category"</span>, <span class="st">"title"</span>, <span class="st">"concatenated_tags"</span>]].nunique()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"products where category/title/tags vary across rows:"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((constant_check <span class="op">&gt;</span> <span class="dv">1</span>).<span class="bu">sum</span>())</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>varying_check <span class="op">=</span> df.groupby(<span class="st">"product_id"</span>)[[<span class="st">"price"</span>, <span class="st">"weight"</span>]].nunique()</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">products where price/weight vary across rows:"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((varying_check <span class="op">&gt;</span> <span class="dv">1</span>).<span class="bu">sum</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>products where category/title/tags vary across rows:
+category             0
+title                0
+concatenated_tags    0
+dtype: int64
+
+products where price/weight vary across rows:
+price     5781
+weight    5287
+dtype: int64</code></pre>
+</div>
+</div>
+<p>As expected: zero products have more than one distinct <code>category</code>, <code>title</code>, or <code>concatenated_tags</code> across their rows, they really are pure product attributes. <code>price</code> and <code>weight</code> do vary for a few thousand products (most likely price changes and re-measurements over the window the sample was drawn from), a real data quirk, but out of scope to reconcile here: we keep one row per product and accept the small information loss.</p>
+<div id="d6d29ec5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:36.250011Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:36.249916Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:36.261843Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:36.261643Z&quot;}}" data-execution_count="4">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dedup <span class="op">=</span> deduplicate_products(df)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"rows          : </span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"distinct products : </span><span class="sc">{</span><span class="bu">len</span>(dedup)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"reduction     : </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">-</span> <span class="bu">len</span>(dedup) <span class="op">/</span> <span class="bu">len</span>(df))<span class="sc">:.1f}</span><span class="ss">%"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>rows          : 38,480
+distinct products : 29,778
+reduction     : 22.6%</code></pre>
+</div>
+</div>
+<p>From here on, this notebook works exclusively with <code>dedup</code>, one row per product. Everything computed on <code>df</code> (rows/clicks) belonged to notebook 01; everything from here on is about products.</p>
+</section>
+<section id="target-distribution-and-traintest-split" class="level2">
+<h2 class="anchored" data-anchor-id="target-distribution-and-traintest-split">3. Target distribution and train/test split</h2>
+<p>Does deduplicating change the category imbalance notebook 01 already flagged? We compare the row-level and product-level distributions directly.</p>
+<div id="a45688ef" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:36.262918Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:36.262829Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:36.395565Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:36.395143Z&quot;}}" data-execution_count="5">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>row_counts <span class="op">=</span> df[<span class="st">"category"</span>].value_counts()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>product_counts <span class="op">=</span> dedup[<span class="st">"category"</span>].value_counts().reindex(row_counts.index)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(row_counts))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="fl">0.35</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">-</span> width <span class="op">/</span> <span class="dv">2</span>, row_counts.values, width, label<span class="op">=</span><span class="st">"rows (clicks)"</span>, color<span class="op">=</span>PRIMARY)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">+</span> width <span class="op">/</span> <span class="dv">2</span>, product_counts.values, width, label<span class="op">=</span><span class="st">"distinct products"</span>, color<span class="op">=</span>SECONDARY)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(row_counts.index, rotation<span class="op">=</span><span class="dv">30</span>, ha<span class="op">=</span><span class="st">"right"</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"count"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Category distribution: rows vs. distinct products"</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>row_ratio <span class="op">=</span> row_counts.<span class="bu">max</span>() <span class="op">/</span> row_counts.<span class="bu">min</span>()</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>product_ratio <span class="op">=</span> product_counts.<span class="bu">max</span>() <span class="op">/</span> product_counts.<span class="bu">min</span>()</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"row-level imbalance (largest / smallest)     : </span><span class="sc">{</span>row_ratio<span class="sc">:.1f}</span><span class="ss"> : 1"</span>)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"product-level imbalance (largest / smallest) : </span><span class="sc">{</span>product_ratio<span class="sc">:.1f}</span><span class="ss"> : 1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_product_classification_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>row-level imbalance (largest / smallest)     : 18.7 : 1
+product-level imbalance (largest / smallest) : 14.8 : 1</code></pre>
+</div>
+</div>
+<p>The imbalance eases slightly (popular categories like <code>Lembrancinhas</code> get clicked more per product than rarer ones) but stays severe, roughly 15:1 at the product level. Whatever evaluation metric we lead with has to be robust to this, which is exactly the concern the 2021 notebook’s accuracy-first framing didn’t address (see §7).</p>
+<p>Every model in this notebook is compared on the <strong>same</strong> stratified train/test split, fixed once here and reused throughout, so comparisons across sections are apples to apples.</p>
+<div id="85792f9b" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:36.396538Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:36.396450Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:36.410981Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:36.410774Z&quot;}}" data-execution_count="6">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    dedup, test_size<span class="op">=</span><span class="fl">0.25</span>, stratify<span class="op">=</span>dedup[<span class="st">"category"</span>], random_state<span class="op">=</span>RANDOM_STATE</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"train: </span><span class="sc">{</span><span class="bu">len</span>(train)<span class="sc">:,}</span><span class="ss"> products, test: </span><span class="sc">{</span><span class="bu">len</span>(test)<span class="sc">:,}</span><span class="ss"> products"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>train: 22,333 products, test: 7,445 products</code></pre>
+</div>
+</div>
+</section>
+<section id="numeric-only-baseline" class="level2">
+<h2 class="anchored" data-anchor-id="numeric-only-baseline">4. Numeric-only baseline</h2>
+<p>Before touching text, we establish what the product’s numeric attributes alone can do, and which of them actually carry signal. This mirrors a technique the 2021 notebook used well: <code>permutation_importance</code> to rank features by how much shuffling each one hurts the model, rather than assuming importance from a correlation table.</p>
+<p>A Random Forest with the current scikit-learn default (<code>n_estimators=100</code>, not the old default of 10 the 2021 notebook used) and a fixed <code>random_state</code> is the baseline model. Missing <code>weight</code>/<code>price_per_weight</code> values (see <code>weight_missing</code> from notebook 01) are median-imputed inside the pipeline, fit on the training fold only.</p>
+<div id="5e6822a5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:36.411900Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:36.411822Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:36.895220Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:36.894715Z&quot;}}" data-execution_count="7">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>numeric_candidates <span class="op">=</span> [</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"price"</span>, <span class="st">"weight"</span>, <span class="st">"price_per_weight"</span>, <span class="st">"minimum_quantity"</span>, <span class="st">"express_delivery"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"view_counts"</span>, <span class="st">"order_counts"</span>, <span class="st">"views_per_day"</span>, <span class="st">"orders_per_day"</span>, <span class="st">"order_probability"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"number_of_days"</span>, <span class="st">"weight_missing"</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>X_train_num <span class="op">=</span> train[numeric_candidates].assign(weight_missing<span class="op">=</span><span class="kw">lambda</span> d: d[<span class="st">"weight_missing"</span>].astype(<span class="bu">int</span>))</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>X_test_num <span class="op">=</span> test[numeric_candidates].assign(weight_missing<span class="op">=</span><span class="kw">lambda</span> d: d[<span class="st">"weight_missing"</span>].astype(<span class="bu">int</span>))</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>numeric_baseline <span class="op">=</span> Pipeline(</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    steps<span class="op">=</span>[</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"impute"</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">"median"</span>)),</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"rf"</span>, RandomForestClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, random_state<span class="op">=</span>RANDOM_STATE, n_jobs<span class="op">=-</span><span class="dv">1</span>)),</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>numeric_baseline.fit(X_train_num, train[<span class="st">"category"</span>])</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>pred_num <span class="op">=</span> numeric_baseline.predict(X_test_num)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(test[<span class="st">"category"</span>], pred_num, zero_division<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"macro-F1 : </span><span class="sc">{</span>f1_score(test[<span class="st">'category'</span>], pred_num, average<span class="op">=</span><span class="st">'macro'</span>)<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"accuracy : </span><span class="sc">{</span>accuracy_score(test[<span class="st">'category'</span>], pred_num)<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    precision    recall  f1-score   support
+
+              Bebê       0.48      0.43      0.45      1362
+Bijuterias e Jóias       0.52      0.23      0.32       215
+         Decoração       0.54      0.67      0.60      1846
+     Lembrancinhas       0.76      0.87      0.81      3191
+            Outros       0.32      0.07      0.11       256
+       Papel e Cia       0.37      0.08      0.14       575
+
+          accuracy                           0.63      7445
+         macro avg       0.50      0.39      0.40      7445
+      weighted avg       0.60      0.63      0.60      7445
+
+macro-F1 : 0.403
+accuracy : 0.630</code></pre>
+</div>
+</div>
+<p>63% accuracy looks respectable in isolation, but macro-F1 (which weights every class equally rather than by size) tells a different story: 0.40. The model is mostly succeeding at the majority class, <code>Lembrancinhas</code> (F1 0.81), and struggling badly on the smaller ones (<code>Outros</code> F1 0.11, <code>Papel e Cia</code> F1 0.14). This is the imbalance from §3 showing up directly, and it’s why macro-F1, not accuracy, is this notebook’s headline metric from here on.</p>
+<p>Which numeric features is the model actually relying on?</p>
+<div id="a8f7f4b6" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:36.896667Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:36.896556Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:42.424836Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:42.423691Z&quot;}}" data-execution_count="8">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> permutation_importance(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    numeric_baseline, X_test_num, test[<span class="st">"category"</span>], n_repeats<span class="op">=</span><span class="dv">10</span>, random_state<span class="op">=</span>RANDOM_STATE, n_jobs<span class="op">=-</span><span class="dv">1</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>order <span class="op">=</span> result.importances_mean.argsort()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>ax.boxplot(</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    result.importances[order].T, vert<span class="op">=</span><span class="va">False</span>, tick_labels<span class="op">=</span>np.array(numeric_candidates)[order]</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Permutation importance (numeric-only Random Forest baseline)"</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"decrease in macro accuracy when shuffled"</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_product_classification_files/figure-html/cell-8-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><code>price</code> dominates, exactly as in the 2021 notebook’s version of this chart. Three more features clear a visible margin above the rest: <code>minimum_quantity</code>, <code>weight</code>, and <code>price_per_weight</code>. Everything past those four (<code>number_of_days</code>, <code>express_delivery</code>, <code>order_probability</code>, the engagement counts) sits close to zero. We carry the top four forward as <code>NUMERIC_FEATURES</code> (<code>src/models/classifier.py</code>) for the combined model in §6, rather than every candidate: adding near-zero-importance features only adds noise and dimensionality for no benefit.</p>
+</section>
+<section id="text-vectorization-tf-idf-or-hashing" class="level2">
+<h2 class="anchored" data-anchor-id="text-vectorization-tf-idf-or-hashing">5. Text vectorization: TF-IDF or hashing?</h2>
+<p>The 2021 notebook tried TF-IDF, measured a 2,472-column, 724.6 MB dense DataFrame, and abandoned it for <code>FeatureHasher</code> on the strength of that measurement. The measurement was the mistake: it came from calling <code>.todense()</code> on what TF-IDF naturally produces as a <strong>sparse</strong> matrix, materializing every zero. We repeat the comparison, keeping TF-IDF sparse this time.</p>
+<p>First, build the combined product text (<code>title</code> + <code>concatenated_tags</code>, cleaned, stopwords removed, joined into one string per product) via <code>src.features.text.joined_tokens</code>, the same tokenizer used throughout notebook 01.</p>
+<div id="61674233" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:42.429028Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:42.428925Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:42.660309Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:42.660078Z&quot;}}" data-execution_count="9">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> train.assign(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    product_text<span class="op">=</span>[joined_tokens(t, tg) <span class="cf">for</span> t, tg <span class="kw">in</span> <span class="bu">zip</span>(train[<span class="st">"title"</span>], train[<span class="st">"concatenated_tags"</span>])]</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> test.assign(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    product_text<span class="op">=</span>[joined_tokens(t, tg) <span class="cf">for</span> t, tg <span class="kw">in</span> <span class="bu">zip</span>(test[<span class="st">"title"</span>], test[<span class="st">"concatenated_tags"</span>])]</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>train[[<span class="st">"title"</span>, <span class="st">"concatenated_tags"</span>, <span class="st">"product_text"</span>]].head(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">concatenated_tags</th>
+<th data-quarto-table-cell-role="th">product_text</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2923</th>
+<td>Kit Abajur Para Quarto Com Cúpula 2 un</td>
+<td>abajures quarto quarto</td>
+<td>kit abajur quarto cupula un abajures quarto qu...</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">29547</th>
+<td>Tubete Baby Shark</td>
+<td>festa lorena analice baby shark</td>
+<td>tubete baby shark festa lorena analice baby shark</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">12949</th>
+<td>Chaveiros de mdf - Borboleta e Regador</td>
+<td>lembrancinhas cha niver livia maternidade nasc...</td>
+<td>chaveiros mdf borboleta regador lembrancinhas ...</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="7d1d7f5f" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:42.661318Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:42.661223Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:42.764003Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:42.763780Z&quot;}}" data-execution_count="10">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>tfidf <span class="op">=</span> TfidfVectorizer(min_df<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>X_train_tfidf <span class="op">=</span> tfidf.fit_transform(train[<span class="st">"product_text"</span>])</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>X_test_tfidf <span class="op">=</span> tfidf.transform(test[<span class="st">"product_text"</span>])</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>nonzero_mb <span class="op">=</span> X_train_tfidf.data.nbytes <span class="op">/</span> <span class="fl">1e6</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"TF-IDF matrix: </span><span class="sc">{</span>X_train_tfidf<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">:,}</span><span class="ss"> x </span><span class="sc">{</span>X_train_tfidf<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"actual sparse memory: </span><span class="sc">{</span>nonzero_mb<span class="sc">:.1f}</span><span class="ss"> MB (not the </span><span class="sc">{</span>X_train_tfidf<span class="sc">.</span>shape[<span class="dv">0</span>] <span class="op">*</span> X_train_tfidf<span class="sc">.</span>shape[<span class="dv">1</span>] <span class="op">*</span> <span class="dv">8</span> <span class="op">/</span> <span class="fl">1e6</span><span class="sc">:,.0f}</span><span class="ss"> MB a dense array would need)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>TF-IDF matrix: 22,333 x 5,549
+actual sparse memory: 1.2 MB (not the 991 MB a dense array would need)</code></pre>
+</div>
+</div>
+<p>A few thousand columns, but under 2 MB of actual nonzero data: nowhere near the earlier measurement’s 724.6 MB. Densifying was the bug, not TF-IDF itself. We now compare TF-IDF against <code>FeatureHasher</code> on equal footing, text only, using <code>LinearSVC</code> for both (fast and sparse-friendly) plus <code>MultinomialNB</code> as a second reference point for TF-IDF specifically: <code>MultinomialNB</code> requires non-negative input, which <code>FeatureHasher</code>’s default alternating-sign scheme doesn’t guarantee, so it isn’t a fair comparison there and is left blank for hashing.</p>
+<div id="ae6d9aec" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:42.765269Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:42.765177Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:43.529963Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:43.529553Z&quot;}}" data-execution_count="11">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.naive_bayes <span class="im">import</span> MultinomialNB</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> macro_f1_text_only(X_train, X_test, model):</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    model.fit(X_train, train[<span class="st">"category"</span>])</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    pred <span class="op">=</span> model.predict(X_test)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> f1_score(test[<span class="st">"category"</span>], pred, average<span class="op">=</span><span class="st">"macro"</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>hashed_train_tokens <span class="op">=</span> train[<span class="st">"product_text"</span>].<span class="bu">str</span>.split()</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>hashed_test_tokens <span class="op">=</span> test[<span class="st">"product_text"</span>].<span class="bu">str</span>.split()</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>vectorizer_results <span class="op">=</span> {<span class="st">"TF-IDF"</span>: {}, <span class="st">"Hashing (256)"</span>: {}, <span class="st">"Hashing (1024)"</span>: {}}</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, n_features <span class="kw">in</span> [(<span class="st">"Hashing (256)"</span>, <span class="dv">256</span>), (<span class="st">"Hashing (1024)"</span>, <span class="dv">1024</span>)]:</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    hasher <span class="op">=</span> FeatureHasher(n_features<span class="op">=</span>n_features, input_type<span class="op">=</span><span class="st">"string"</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    X_train_h <span class="op">=</span> hasher.transform(hashed_train_tokens)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    X_test_h <span class="op">=</span> hasher.transform(hashed_test_tokens)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    vectorizer_results[name][<span class="st">"LinearSVC"</span>] <span class="op">=</span> macro_f1_text_only(</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>        X_train_h, X_test_h, LinearSVC(random_state<span class="op">=</span>RANDOM_STATE)</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>vectorizer_results[<span class="st">"TF-IDF"</span>][<span class="st">"MultinomialNB"</span>] <span class="op">=</span> macro_f1_text_only(</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    X_train_tfidf, X_test_tfidf, MultinomialNB()</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>vectorizer_results[<span class="st">"TF-IDF"</span>][<span class="st">"LinearSVC"</span>] <span class="op">=</span> macro_f1_text_only(</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    X_train_tfidf, X_test_tfidf, LinearSVC(random_state<span class="op">=</span>RANDOM_STATE)</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(vectorizer_results).T</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">MultinomialNB</th>
+<th data-quarto-table-cell-role="th">LinearSVC</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">TF-IDF</th>
+<td>0.773368</td>
+<td>0.843058</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Hashing (256)</th>
+<td>NaN</td>
+<td>0.637097</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Hashing (1024)</th>
+<td>NaN</td>
+<td>0.775307</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>TF-IDF with <code>LinearSVC</code> wins outright, and by a wide margin over even the larger, 1024-feature hasher (which also costs 4x the earlier one’s dimensionality for a worse score). TF-IDF also keeps the one real advantage the 2021 notebook correctly identified for itself: it can be inverted back to words for inspection, which a hashed feature can’t. We carry TF-IDF forward.</p>
+</section>
+<section id="combined-model-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="combined-model-comparison">6. Combined model comparison</h2>
+<p>Text (TF-IDF) and the four numeric features selected in §4, combined, across three algorithms, each with and without feature scaling on the numeric side (<code>StandardScaler</code>; TF-IDF output is already on a bounded, comparable scale and is left alone). Every split, seed, and metric here is identical to the rest of the notebook.</p>
+<div id="ae606fec" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:43.531069Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:43.530984Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:52.374004Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:52.373710Z&quot;}}" data-execution_count="12">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>X_train_num4 <span class="op">=</span> train[NUMERIC_FEATURES].copy()</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>X_test_num4 <span class="op">=</span> test[NUMERIC_FEATURES].copy()</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>imputer <span class="op">=</span> SimpleImputer(strategy<span class="op">=</span><span class="st">"median"</span>).fit(X_train_num4)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>X_train_num4 <span class="op">=</span> imputer.transform(X_train_num4)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>X_test_num4 <span class="op">=</span> imputer.transform(X_test_num4)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler().fit(X_train_num4)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>X_train_num4_scaled <span class="op">=</span> scaler.transform(X_train_num4)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>X_test_num4_scaled <span class="op">=</span> scaler.transform(X_test_num4)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> combined(text_matrix, numeric_matrix):</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sparse.hstack([text_matrix, sparse.csr_matrix(numeric_matrix)]).tocsr()</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>X_train_raw <span class="op">=</span> combined(X_train_tfidf, X_train_num4)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>X_test_raw <span class="op">=</span> combined(X_test_tfidf, X_test_num4)</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>X_train_scaled <span class="op">=</span> combined(X_train_tfidf, X_train_num4_scaled)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>X_test_scaled <span class="op">=</span> combined(X_test_tfidf, X_test_num4_scaled)</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Random Forest"</span>: RandomForestClassifier(n_estimators<span class="op">=</span><span class="dv">100</span>, random_state<span class="op">=</span>RANDOM_STATE, n_jobs<span class="op">=-</span><span class="dv">1</span>),</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LinearSVC"</span>: LinearSVC(random_state<span class="op">=</span>RANDOM_STATE),</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"KNN (k=7)"</span>: KNeighborsClassifier(n_neighbors<span class="op">=</span><span class="dv">7</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>),</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>comparison <span class="op">=</span> {}</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, model <span class="kw">in</span> models.items():</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    model.fit(X_train_raw, train[<span class="st">"category"</span>])</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    pred_raw <span class="op">=</span> model.predict(X_test_raw)</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>    scaled_model <span class="op">=</span> <span class="bu">type</span>(model)(<span class="op">**</span>model.get_params())</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    scaled_model.fit(X_train_scaled, train[<span class="st">"category"</span>])</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    pred_scaled <span class="op">=</span> scaled_model.predict(X_test_scaled)</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    comparison[name] <span class="op">=</span> {</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>        <span class="st">"macro-F1 (no scaling)"</span>: f1_score(test[<span class="st">"category"</span>], pred_raw, average<span class="op">=</span><span class="st">"macro"</span>),</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>        <span class="st">"macro-F1 (StandardScaler)"</span>: f1_score(test[<span class="st">"category"</span>], pred_scaled, average<span class="op">=</span><span class="st">"macro"</span>),</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>        <span class="st">"accuracy (no scaling)"</span>: accuracy_score(test[<span class="st">"category"</span>], pred_raw),</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>        <span class="st">"accuracy (StandardScaler)"</span>: accuracy_score(test[<span class="st">"category"</span>], pred_scaled),</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>comparison_df <span class="op">=</span> pd.DataFrame(comparison).T</span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>comparison_df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">macro-F1 (no scaling)</th>
+<th data-quarto-table-cell-role="th">macro-F1 (StandardScaler)</th>
+<th data-quarto-table-cell-role="th">accuracy (no scaling)</th>
+<th data-quarto-table-cell-role="th">accuracy (StandardScaler)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Random Forest</th>
+<td>0.811951</td>
+<td>0.812452</td>
+<td>0.867293</td>
+<td>0.867831</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">LinearSVC</th>
+<td>0.842026</td>
+<td>0.849097</td>
+<td>0.877099</td>
+<td>0.880591</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">KNN (k=7)</th>
+<td>0.343657</td>
+<td>0.790172</td>
+<td>0.587105</td>
+<td>0.844459</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="1b58b102" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:52.374834Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:52.374749Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:52.437849Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:52.437564Z&quot;}}" data-execution_count="13">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="bu">len</span>(comparison_df))</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="fl">0.35</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">-</span> width <span class="op">/</span> <span class="dv">2</span>, comparison_df[<span class="st">"macro-F1 (no scaling)"</span>], width, label<span class="op">=</span><span class="st">"no scaling"</span>, color<span class="op">=</span>PRIMARY)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>ax.bar(x <span class="op">+</span> width <span class="op">/</span> <span class="dv">2</span>, comparison_df[<span class="st">"macro-F1 (StandardScaler)"</span>], width, label<span class="op">=</span><span class="st">"StandardScaler"</span>, color<span class="op">=</span>SECONDARY)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(x)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(comparison_df.index)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"macro-F1"</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Text + numeric model comparison"</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_product_classification_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Three different stories, by model family:</p>
+<ul>
+<li><strong>KNN is the headline result here.</strong> Unscaled, it collapses to macro-F1 well below even the numeric-only baseline: <code>price</code>, ranging into the thousands, swamps the Euclidean distance calculation, drowning out both the TF-IDF signal and the other numeric features. Scaling recovers most of that. This is the concrete demonstration the 2021 notebook’s scaling comparison gestured at but never isolated so clearly, because it never tested a distance-based model against unscaled <code>price</code> directly.</li>
+<li><strong>Random Forest is scale-invariant</strong>, as expected for a tree-based model: near-identical scores with or without scaling.</li>
+<li><strong>LinearSVC is the best model either way</strong>, and the one we carry forward, with scaling giving it a small further edge.</li>
+</ul>
+<p>One more comparison worth making explicit: how much did adding numeric features actually help, compared to text alone?</p>
+<div id="426d77ca" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:52.438776Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:52.438687Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:52.621987Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:52.621768Z&quot;}}" data-execution_count="14">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>text_only_svc <span class="op">=</span> LinearSVC(random_state<span class="op">=</span>RANDOM_STATE)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>text_only_svc.fit(X_train_tfidf, train[<span class="st">"category"</span>])</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>text_only_pred <span class="op">=</span> text_only_svc.predict(X_test_tfidf)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>text_only_f1 <span class="op">=</span> f1_score(test[<span class="st">"category"</span>], text_only_pred, average<span class="op">=</span><span class="st">"macro"</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>combined_f1 <span class="op">=</span> comparison_df.loc[<span class="st">"LinearSVC"</span>, <span class="st">"macro-F1 (StandardScaler)"</span>]</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"text only            : macro-F1 = </span><span class="sc">{</span>text_only_f1<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"text + numeric (best) : macro-F1 = </span><span class="sc">{</span>combined_f1<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>text only            : macro-F1 = 0.843
+text + numeric (best) : macro-F1 = 0.849</code></pre>
+</div>
+</div>
+<p>Barely different. Product text alone already captures most of what separates these categories; the four numeric features add a small, real, but modest improvement on top. That’s a useful, honest finding in its own right: it says the categories are primarily a <em>language</em> signal (what sellers call their products), and only secondarily a pricing/logistics one. This also supports the earlier scope decision in a different way: if numeric features barely move the needle, a query-only classifier for Part 5 (no numeric features at all) isn’t giving up as much as it might first appear.</p>
+</section>
+<section id="best-model-deep-dive" class="level2">
+<h2 class="anchored" data-anchor-id="best-model-deep-dive">7. Best model deep dive</h2>
+<p>LinearSVC with scaled numeric features is the winner. Before finalizing it, we run a bounded hyperparameter search over its one main knob, <code>C</code>, the regularization strength, rather than describing what a search <em>would</em> look like without running it (the 2021 notebook’s <code>GridSearchCV</code> was shown as an unexecuted code block). Search is cross-validated on the training fold only, scored on macro-F1, and kept small (<code>RandomizedSearchCV</code>, 8 candidates, 3-fold) since this is meant to check whether the default is already reasonable, not to chase a fraction of a point.</p>
+<div id="f29a85ff" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:52.622902Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:52.622812Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:56.334925Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:56.334477Z&quot;}}" data-execution_count="15">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>param_dist <span class="op">=</span> {<span class="st">"C"</span>: [<span class="fl">0.01</span>, <span class="fl">0.03</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">30</span>]}</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>search <span class="op">=</span> RandomizedSearchCV(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    LinearSVC(random_state<span class="op">=</span>RANDOM_STATE, dual<span class="op">=</span><span class="st">"auto"</span>),</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    param_dist,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    n_iter<span class="op">=</span><span class="dv">8</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    scoring<span class="op">=</span><span class="st">"f1_macro"</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span>RANDOM_STATE,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    n_jobs<span class="op">=-</span><span class="dv">1</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>search.fit(X_train_scaled, train[<span class="st">"category"</span>])</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"best C: </span><span class="sc">{</span>search<span class="sc">.</span>best_params_[<span class="st">'C'</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"cross-validated macro-F1: </span><span class="sc">{</span>search<span class="sc">.</span>best_score_<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>best C: 1
+cross-validated macro-F1: 0.847</code></pre>
+</div>
+</div>
+<p>The default, <code>C=1</code>, is already what the search picks. Same conclusion the 2021 notebook reached for its SVM (tuning barely moved the needle), but this time from an executed search rather than an aside. We finalize the pipeline at the default.</p>
+<div id="c403e68a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:56.336320Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:56.336236Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:56.378826Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:56.378563Z&quot;}}" data-execution_count="16">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>final_model <span class="op">=</span> search.best_estimator_</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>final_pred <span class="op">=</span> final_model.predict(X_test_scaled)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(test[<span class="st">"category"</span>], final_pred, zero_division<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"macro-F1 : </span><span class="sc">{</span>f1_score(test[<span class="st">'category'</span>], final_pred, average<span class="op">=</span><span class="st">'macro'</span>)<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"accuracy : </span><span class="sc">{</span>accuracy_score(test[<span class="st">'category'</span>], final_pred)<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    precision    recall  f1-score   support
+
+              Bebê       0.89      0.84      0.86      1362
+Bijuterias e Jóias       0.96      0.92      0.94       215
+         Decoração       0.90      0.89      0.89      1846
+     Lembrancinhas       0.87      0.94      0.91      3191
+            Outros       0.83      0.67      0.74       256
+       Papel e Cia       0.83      0.69      0.75       575
+
+          accuracy                           0.88      7445
+         macro avg       0.88      0.82      0.85      7445
+      weighted avg       0.88      0.88      0.88      7445
+
+macro-F1 : 0.849
+accuracy : 0.881</code></pre>
+</div>
+</div>
+<p>0.85 macro-F1, 0.88 accuracy, a large jump from the 0.40 / 0.63 numeric-only baseline in §4. Every class reaches at least F1 0.74. <code>Outros</code> and <code>Papel e Cia</code> remain the weakest, exactly as the 2021 notebook found for its own best model, so this isn’t an artifact of one particular pipeline; something about those two categories is genuinely harder. The confusion matrix shows what:</p>
+<div id="d09bdd04" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:56.379700Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:56.379622Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:56.465396Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:56.464990Z&quot;}}" data-execution_count="17">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> <span class="bu">sorted</span>(dedup[<span class="st">"category"</span>].unique())</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(test[<span class="st">"category"</span>], final_pred, labels<span class="op">=</span>labels)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">6</span>))</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>disp <span class="op">=</span> ConfusionMatrixDisplay(confusion_matrix<span class="op">=</span>cm, display_labels<span class="op">=</span>labels)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>disp.plot(ax<span class="op">=</span>ax, cmap<span class="op">=</span><span class="st">"Blues"</span>, colorbar<span class="op">=</span><span class="va">False</span>, xticks_rotation<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Confusion matrix: text + numeric LinearSVC"</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_product_classification_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The two weak categories fail in different ways:</p>
+<ul>
+<li><strong><code>Outros</code></strong> (“Others”) spreads its errors roughly evenly across <code>Decoração</code> and <code>Lembrancinhas</code>, with no single dominant confusion partner. That’s consistent with what the name implies: a catch-all category without a coherent vocabulary of its own, so the model has no single competing category to specifically confuse it with.</li>
+<li><strong><code>Papel e Cia</code></strong> (“Paper Crafts”) confuses specifically and heavily with <code>Lembrancinhas</code> (“Party Favors”), which makes sense: paper party favors (invitations, decorative paper goods) plausibly sit at the boundary of both categories, sharing vocabulary like “festa” (“party”) and “personalizado” (“personalized”).</li>
+</ul>
+<p>Both are genuine category-boundary problems in the data, not something a different algorithm or more tuning would likely fix.</p>
+</section>
+<section id="key-findings-handoff" class="level2">
+<h2 class="anchored" data-anchor-id="key-findings-handoff">8. Key findings &amp; handoff</h2>
+<p><strong>What we changed from the 2021 notebook, and why:</strong></p>
+<ul>
+<li>Text feature: <code>title</code> + <code>concatenated_tags</code> instead of <code>query</code>, keeping this notebook scoped to “classify a product from its own description” (§0).</li>
+<li>Grain: deduplicated to one row per product (38,480 rows -&gt; 29,778 products) before splitting, since <code>category</code>/<code>title</code>/<code>concatenated_tags</code> never vary within a product (§2).</li>
+<li>Every split and model is seeded (<code>random_state=42</code>) and stratified; the 2021 notebook was neither, so its quoted accuracy numbers weren’t reproducible run to run.</li>
+<li>Macro-F1, not accuracy, is the headline metric throughout, because category is imbalanced roughly 15:1 even at the product level (§3-4).</li>
+<li>TF-IDF was re-tried and won decisively once kept sparse; the 2021 notebook’s rejection of it was based on a <code>.todense()</code> measurement artifact, not a real memory problem (§5).</li>
+<li><code>LinearSVC</code> replaces the 2021 notebook’s RBF-kernel SVM for text, since RBF doesn’t scale to high-dimensional sparse text the way a linear kernel does (§6).</li>
+<li>The <code>GridSearchCV</code>/<code>RandomizedSearchCV</code> step was actually executed, not just described (§7).</li>
+</ul>
+<p><strong>What we learned:</strong></p>
+<ul>
+<li>Product text alone (<code>title</code> + <code>concatenated_tags</code>, TF-IDF, <code>LinearSVC</code>) already reaches macro-F1 0.84; adding the four best numeric features (<code>price</code>, <code>minimum_quantity</code>, <code>weight</code>, <code>price_per_weight</code>) only pushes that to 0.85. Category is primarily a language signal in this dataset, numeric product attributes add real but secondary information.</li>
+<li>Unscaled <code>price</code> is actively harmful to a distance-based model (KNN’s macro-F1 falls from 0.79 to 0.34 without scaling), a sharper version of a lesson the 2021 notebook’s scaling comparison only gestured at.</li>
+<li><code>Outros</code> and <code>Papel e Cia</code> are the two hardest categories for every model tried, in both this notebook and the 2021 one, for two different, identifiable reasons (§7): one is a diffuse catch-all, the other is a genuine boundary case with <code>Lembrancinhas</code>.</li>
+</ul>
+<p><strong>Saved for notebook 05 (System Integration):</strong></p>
+<div id="79be318a" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T12:47:56.466402Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T12:47:56.466322Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T12:47:57.501730Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T12:47:57.501471Z&quot;}}" data-execution_count="18">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> joblib</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>models_dir <span class="op">=</span> Path(<span class="st">"../models"</span>)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>models_dir.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>final_pipeline <span class="op">=</span> build_pipeline(C<span class="op">=</span>search.best_params_[<span class="st">"C"</span>])</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>dedup_with_text <span class="op">=</span> dedup.assign(</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    product_text<span class="op">=</span>[joined_tokens(t, tg) <span class="cf">for</span> t, tg <span class="kw">in</span> <span class="bu">zip</span>(dedup[<span class="st">"title"</span>], dedup[<span class="st">"concatenated_tags"</span>])]</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>final_pipeline.fit(dedup_with_text[[TEXT_FEATURE, <span class="op">*</span>NUMERIC_FEATURES]], dedup_with_text[<span class="st">"category"</span>])</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>joblib.dump(final_pipeline, models_dir <span class="op">/</span> <span class="st">"02_product_classifier.joblib"</span>)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>feature_catalog <span class="op">=</span> [</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"product_text"</span>, <span class="st">"text"</span>, <span class="st">"engineered"</span>, <span class="st">"title, concatenated_tags"</span>, <span class="st">"Cleaned, stopword-free tokens from title and tags, joined into one string."</span>),</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"price"</span>, <span class="st">"numerical"</span>, <span class="st">"original"</span>, <span class="st">"price"</span>, <span class="st">"Top-ranked numeric feature by permutation importance."</span>),</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"minimum_quantity"</span>, <span class="st">"numerical"</span>, <span class="st">"original"</span>, <span class="st">"minimum_quantity"</span>, <span class="st">"Second-ranked numeric feature by permutation importance."</span>),</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"weight"</span>, <span class="st">"numerical"</span>, <span class="st">"original"</span>, <span class="st">"weight"</span>, <span class="st">"Third-ranked numeric feature by permutation importance. Median-imputed where missing."</span>),</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"price_per_weight"</span>, <span class="st">"numerical"</span>, <span class="st">"engineered"</span>, <span class="st">"price, weight"</span>, <span class="st">"Fourth-ranked numeric feature by permutation importance. Median-imputed where missing."</span>),</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>df_features <span class="op">=</span> pd.DataFrame(feature_catalog, columns<span class="op">=</span>[<span class="st">"Name"</span>, <span class="st">"Type"</span>, <span class="st">"Category"</span>, <span class="st">"Source"</span>, <span class="st">"Description"</span>])</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>df_features.to_parquet(<span class="st">"../data/processed/02_features.parquet"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"saved ../models/02_product_classifier.joblib (fit on the full deduplicated product set)"</span>)</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"saved </span><span class="sc">{</span><span class="bu">len</span>(df_features)<span class="sc">}</span><span class="ss"> feature rows -&gt; data/processed/02_features.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>saved ../models/02_product_classifier.joblib (fit on the full deduplicated product set)
+saved 5 feature rows -&gt; data/processed/02_features.parquet</code></pre>
+</div>
+</div>
+<p>The pipeline is refit on the <strong>full</strong> deduplicated product set (not just the training split) before saving, standard practice once a model has been selected and evaluated: the held-out test set already did its job in §4-7, and there’s no reason to withhold data from the version that ships.</p>
+</section>
+<section id="closing-remarks" class="level2">
+<h2 class="anchored" data-anchor-id="closing-remarks">Closing remarks</h2>
+<p>This notebook built and compared a numeric-only baseline, two text vectorizers, and three algorithms with and without scaling, arriving at TF-IDF product text (<code>title</code> + <code>concatenated_tags</code>) plus four numeric features, fed to a <code>LinearSVC</code>, as the Part 2 classifier (macro-F1 0.85, accuracy 0.88 on held-out products). The two categories it still struggles with, <code>Outros</code> and <code>Papel e Cia</code>, fail for identifiable, different reasons rather than a fixable implementation bug.</p>
+<p>The <a href="../notebooks/03_search_intent_modeling.html">next notebook</a> turns to Part 3: defining and modeling search intent classes, where, unlike here, no ground-truth labels exist at all.</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
