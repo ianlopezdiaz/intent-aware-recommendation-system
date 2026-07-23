@@ -6,8 +6,7 @@ defined by `category_top_share`: whether a query's clicks concentrate in one
 two-stage design: behavioral aggregates decide the class for queries with
 enough click history (`MIN_CLICKS_FOR_DISCOVERY`), and a text-only classifier
 (`build_pipeline`) generalizes those labels to any query, seen or not. See
-`intent-methodology.md` (workspace root) and notebook 03 for the full
-reasoning and the numbers behind each choice.
+notebook 03 for the full reasoning and the numbers behind each choice.
 """
 
 import pandas as pd

@@ -3,9 +3,7 @@
 ## Layout
 
 - `raw/` — original, immutable data. Contains `elo7_recruitment_dataset.csv`, the dataset provided for the challenge. Never edit in place.
-- `interim/` — intermediate datasets generated while cleaning/transforming the raw data (not yet ready for modeling).
-- `processed/` — final, model-ready datasets produced by the notebooks/`src/data` pipeline.
-- `external/` — third-party or external datasets, if any are added later. Empty for now.
+- `processed/` — final, model-ready datasets and cached artifacts produced by the notebooks/`src/data` pipeline.
 
 ## `raw/elo7_recruitment_dataset.csv`
 
@@ -29,6 +27,6 @@
 | `order_counts` | float | 20,390 (~53%) | Purchases in the prior 3 months. **Null almost certainly means zero orders in the window, not missing data** — treat as `0` after confirming, don't drop or impute as unknown. |
 | `category` | string | 0 | Target label for Part 2 (classification). Six values, imbalanced: `Lembrancinhas` 17,759, `Decoração` 8,846, `Bebê` 7,026, `Papel e Cia` 2,777, `Outros` 1,148, `Bijuterias e Jóias` 951. |
 
-No ground-truth label exists for search intent (Part 3) — that has to be constructed, see the methodology note in `claude-suggestions.md`.
+No ground-truth label exists for search intent (Part 3) — that has to be constructed, see `../notebooks/03_search_intent_modeling.ipynb` for the methodology.
 
 Full column semantics and the original problem statement: `../docs/elo7-ds-challenge-en.md`.

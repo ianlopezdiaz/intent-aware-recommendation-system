@@ -1,8 +1,9 @@
 """Evaluation metrics for classification, clustering, and recommendation quality."""
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 
 import numpy as np
+import pandas as pd
 
 
 def evaluate_recommender(
@@ -39,3 +40,29 @@ def evaluate_recommender(
         hits.append(1.0 if overlap > 0 else 0.0)
         recalls.append(overlap / len(clicked))
     return {"hit_rate": float(np.mean(hits)), "recall": float(np.mean(recalls))}
+
+
+def category_diversity(categories: Iterable[str]) -> dict[str, float]:
+    """Distinct-category count and category-distribution entropy for a set of recommendations.
+
+    Complements `evaluate_recommender`'s relevance-focused metrics with a
+    diversity-focused one: two top-k lists can have identical hit-rate while
+    one repeats a single category and the other spans several.
+
+    Parameters
+    ----------
+    categories : iterable of str
+        One `category` value per recommended item, e.g. a top-k result's
+        `category` column.
+
+    Returns
+    -------
+    dict
+        `n_distinct`: number of distinct categories present.
+        `entropy`: Shannon entropy, in bits, of the category distribution;
+        0 if every item shares one category, higher as the split evens out
+        across more categories.
+    """
+    counts = pd.Series(list(categories)).value_counts(normalize=True)
+    entropy = float(-(counts * np.log2(counts)).sum()) + 0.0  # avoid -0.0 when every item matches.
+    return {"n_distinct": int(counts.shape[0]), "entropy": entropy}
