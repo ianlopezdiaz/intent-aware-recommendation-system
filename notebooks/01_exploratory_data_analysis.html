@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>exploratory_data_analysis – Intent-Aware Recommendation System</title>
+<title>Exploratory Data Analysis – Intent-Aware Recommendation System</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,10 +23,45 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -72,6 +107,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -326,18 +364,1087 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-data-briefly" id="toc-the-data-briefly" class="nav-link active" data-scroll-target="#the-data-briefly">The data, briefly</a></li>
+  <li><a href="#questions-this-notebook-answers" id="toc-questions-this-notebook-answers" class="nav-link" data-scroll-target="#questions-this-notebook-answers">Questions this notebook answers</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">1. Setup</a></li>
+  <li><a href="#data-overview" id="toc-data-overview" class="nav-link" data-scroll-target="#data-overview">2. Data overview</a></li>
+  <li><a href="#data-quality" id="toc-data-quality" class="nav-link" data-scroll-target="#data-quality">3. Data quality</a>
+  <ul class="collapse">
+  <li><a href="#the-order_probability-anomaly" id="toc-the-order_probability-anomaly" class="nav-link" data-scroll-target="#the-order_probability-anomaly">The <code>order_probability</code> anomaly</a></li>
+  </ul></li>
+  <li><a href="#category-distribution" id="toc-category-distribution" class="nav-link" data-scroll-target="#category-distribution">4. Category distribution</a></li>
+  <li><a href="#product-level-numeric-features" id="toc-product-level-numeric-features" class="nav-link" data-scroll-target="#product-level-numeric-features">5. Product-level numeric features</a></li>
+  <li><a href="#text-features-tags-title" id="toc-text-features-tags-title" class="nav-link" data-scroll-target="#text-features-tags-title">6. Text features: tags &amp; title</a>
+  <ul class="collapse">
+  <li><a href="#choosing-a-length-feature-characters-or-words" id="toc-choosing-a-length-feature-characters-or-words" class="nav-link" data-scroll-target="#choosing-a-length-feature-characters-or-words">Choosing a length feature: characters or words?</a></li>
+  <li><a href="#most-frequent-tags-and-title-words" id="toc-most-frequent-tags-and-title-words" class="nav-link" data-scroll-target="#most-frequent-tags-and-title-words">Most frequent tags and title words</a></li>
+  </ul></li>
+  <li><a href="#search-query-deep-dive" id="toc-search-query-deep-dive" class="nav-link" data-scroll-target="#search-query-deep-dive">7. Search query deep dive</a>
+  <ul class="collapse">
+  <li><a href="#length-and-repetition" id="toc-length-and-repetition" class="nav-link" data-scroll-target="#length-and-repetition">Length and repetition</a></li>
+  <li><a href="#does-the-query-hint-at-the-category" id="toc-does-the-query-hint-at-the-category" class="nav-link" data-scroll-target="#does-the-query-hint-at-the-category">Does the query hint at the category?</a></li>
+  <li><a href="#vocabulary-overlap-between-query-and-product-text" id="toc-vocabulary-overlap-between-query-and-product-text" class="nav-link" data-scroll-target="#vocabulary-overlap-between-query-and-product-text">Vocabulary overlap between query and product text</a></li>
+  </ul></li>
+  <li><a href="#consolidated-feature-correlation" id="toc-consolidated-feature-correlation" class="nav-link" data-scroll-target="#consolidated-feature-correlation">8. Consolidated feature correlation</a></li>
+  <li><a href="#key-findings-handoff" id="toc-key-findings-handoff" class="nav-link" data-scroll-target="#key-findings-handoff">9. Key findings &amp; handoff</a></li>
+  <li><a href="#closing-remarks" id="toc-closing-remarks" class="nav-link" data-scroll-target="#closing-remarks">Closing remarks</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exploratory Data Analysis</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<p>This is the first notebook in a from-scratch rewrite of a 2021 Elo7 Data Science take-home challenge (full problem statement: <a href="../docs/elo7-ds-challenge-en.html"><code>../docs/elo7-ds-challenge-en.md</code></a>). The question at the heart of the whole project is:</p>
+<blockquote class="blockquote">
+<p>Can a user’s search intent be inferred from the search query alone?</p>
+</blockquote>
+<p>Answering that eventually requires three systems: a product classifier, an unsupervised search-intent model, and a hybrid recommender, built across the notebooks that follow this one. Before any of that, we need to actually understand the data we’re working with, which is the job of this notebook.</p>
+<section id="the-data-briefly" class="level2">
+<h2 class="anchored" data-anchor-id="the-data-briefly">The data, briefly</h2>
+<p>The dataset (<code>../data/raw/elo7_recruitment_dataset.csv</code>) is 38,507 rows, each one a <strong>click on a product resulting from a search query</strong>, not one row per product. A product can (and does) appear more than once if it was clicked from more than one search. The columns fall into three broad groups:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Group</th>
+<th>Columns</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Search context</td>
+<td><code>query</code>, <code>search_page</code>, <code>position</code></td>
+</tr>
+<tr class="even">
+<td>Product</td>
+<td><code>product_id</code>, <code>seller_id</code>, <code>title</code>, <code>concatenated_tags</code>, <code>creation_date</code>, <code>price</code>, <code>weight</code>, <code>express_delivery</code>, <code>minimum_quantity</code>, <code>view_counts</code>, <code>order_counts</code></td>
+</tr>
+<tr class="odd">
+<td>Target (Part 2)</td>
+<td><code>category</code></td>
+</tr>
+</tbody>
+</table>
+<p>Full column-by-column semantics, dtypes, and known null counts are documented in <a href="../data/README.md"><code>../data/README.md</code></a>; this notebook builds on that rather than repeating it, and links back to it where the detail matters.</p>
+</section>
+<section id="questions-this-notebook-answers" class="level2">
+<h2 class="anchored" data-anchor-id="questions-this-notebook-answers">Questions this notebook answers</h2>
+<p>Numbered to match the section headers below, following the challenge’s own suggestion to state the questions before answering them:</p>
+<ol type="1">
+<li><strong>Data overview</strong>: what’s the actual unit of a row, and does that matter?</li>
+<li><strong>Data quality</strong>: where are the gaps, and what do we do about each one?</li>
+<li><strong>Category distribution</strong>: how imbalanced is the target for Part 2, and does it matter whether we count rows or distinct products?</li>
+<li><strong>Product-level numeric features</strong>: what do price, weight, and engagement look like, and how do they vary by category?</li>
+<li><strong>Text features (tags &amp; title)</strong>: what’s worth extracting from seller-provided text, and which of two competing feature designs should we keep?</li>
+<li><strong>Search query deep dive</strong>: what does query text look like on its own, and is there early evidence that category is recoverable from the query alone?</li>
+<li><strong>Consolidated correlation</strong>: which features move together, and what does that suggest for Part 2 (classification) and Part 3 (intent)?</li>
+<li><strong>Key findings &amp; handoff</strong>: what do we carry into notebook 02?</li>
+</ol>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">1. Setup</h2>
+<p>We load the raw dataset through the project’s own <code>src.data.load.load_raw_dataset</code>, which already parses <code>creation_date</code> as a datetime, and pull in the text/numeric feature functions from <code>src.features</code> that we’ll use throughout this notebook (and reuse in later ones).</p>
+<p>Two colors are defined once, up front, and reused everywhere a chart needs to tell two things apart. We deliberately do <em>not</em> give every <code>category</code> its own color in charts where <code>category</code> is already named on the x-axis: that would be a redundant rainbow encoding a single-series bar chart doesn’t need. Color is reserved for the cases where two genuinely different series share one chart (e.g.&nbsp;<code>express_delivery</code> = yes/no, or two metrics side by side).</p>
+<div id="bd0ef6aa" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:43:59.642863Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:43:59.642190Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.479398Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.478847Z&quot;}}" data-execution_count="53">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data.load <span class="im">import</span> load_raw_dataset</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.features.numerical <span class="im">import</span> days_since, order_probability, price_per_weight, rate_per_day</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.features.text <span class="im">import</span> char_length, tokenize, word_count</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>PRIMARY <span class="op">=</span> <span class="st">"#2a78d6"</span>  <span class="co"># Blue, the default single hue for magnitude comparisons.</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>SECONDARY <span class="op">=</span> <span class="st">"#eb6834"</span>  <span class="co"># Orange, the second series whenever a chart compares exactly two things.</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.dpi"</span>] <span class="op">=</span> <span class="dv">110</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"axes.spines.top"</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"axes.spines.right"</span>] <span class="op">=</span> <span class="va">False</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="data-overview" class="level2">
+<h2 class="anchored" data-anchor-id="data-overview">2. Data overview</h2>
+<div id="0c9b1358" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.481116Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.480840Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.561585Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.560915Z&quot;}}" data-execution_count="54">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> load_raw_dataset()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>df<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">:,}</span><span class="ss"> rows x </span><span class="sc">{</span>df<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> columns"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>38,507 rows x 15 columns</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="54">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">product_id</th>
+<th data-quarto-table-cell-role="th">seller_id</th>
+<th data-quarto-table-cell-role="th">query</th>
+<th data-quarto-table-cell-role="th">search_page</th>
+<th data-quarto-table-cell-role="th">position</th>
+<th data-quarto-table-cell-role="th">title</th>
+<th data-quarto-table-cell-role="th">concatenated_tags</th>
+<th data-quarto-table-cell-role="th">creation_date</th>
+<th data-quarto-table-cell-role="th">price</th>
+<th data-quarto-table-cell-role="th">weight</th>
+<th data-quarto-table-cell-role="th">express_delivery</th>
+<th data-quarto-table-cell-role="th">minimum_quantity</th>
+<th data-quarto-table-cell-role="th">view_counts</th>
+<th data-quarto-table-cell-role="th">order_counts</th>
+<th data-quarto-table-cell-role="th">category</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>11394449</td>
+<td>8324141</td>
+<td>espirito santo</td>
+<td>2</td>
+<td>6</td>
+<td>Mandala Espírito Santo</td>
+<td>mandala mdf</td>
+<td>2015-11-14 19:42:12</td>
+<td>171.890000</td>
+<td>1200.0</td>
+<td>1</td>
+<td>4</td>
+<td>244</td>
+<td>NaN</td>
+<td>Decoração</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>15534262</td>
+<td>6939286</td>
+<td>cartao de visita</td>
+<td>2</td>
+<td>0</td>
+<td>Cartão de Visita</td>
+<td>cartao visita panfletos tag adesivos copos lon...</td>
+<td>2018-04-04 20:55:07</td>
+<td>77.670000</td>
+<td>8.0</td>
+<td>1</td>
+<td>5</td>
+<td>124</td>
+<td>NaN</td>
+<td>Papel e Cia</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>16153119</td>
+<td>9835835</td>
+<td>expositor de esmaltes</td>
+<td>1</td>
+<td>38</td>
+<td>Organizador expositor p/ 70 esmaltes</td>
+<td>expositor</td>
+<td>2018-10-13 20:57:07</td>
+<td>73.920006</td>
+<td>2709.0</td>
+<td>1</td>
+<td>1</td>
+<td>59</td>
+<td>NaN</td>
+<td>Outros</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>15877252</td>
+<td>8071206</td>
+<td>medidas lencol para berco americano</td>
+<td>1</td>
+<td>6</td>
+<td>Jogo de Lençol Berço Estampado</td>
+<td>t jogo lencol menino lencol berco</td>
+<td>2017-02-27 13:26:03</td>
+<td>118.770004</td>
+<td>0.0</td>
+<td>1</td>
+<td>1</td>
+<td>180</td>
+<td>1.0</td>
+<td>Bebê</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>15917108</td>
+<td>7200773</td>
+<td>adesivo box banheiro</td>
+<td>3</td>
+<td>38</td>
+<td>ADESIVO BOX DE BANHEIRO</td>
+<td>adesivo box banheiro</td>
+<td>2017-05-09 13:18:38</td>
+<td>191.810000</td>
+<td>507.0</td>
+<td>1</td>
+<td>6</td>
+<td>34</td>
+<td>NaN</td>
+<td>Decoração</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The single most important thing to internalize before looking at any distribution is that a row is a <strong>click event</strong>, not a product. Let’s confirm the scale of that difference.</p>
+<div id="834fd6ea" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.562925Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.562720Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.566992Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.566630Z&quot;}}" data-execution_count="55">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"unique product_id : </span><span class="sc">{</span>df[<span class="st">'product_id'</span>]<span class="sc">.</span>nunique()<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"unique seller_id  : </span><span class="sc">{</span>df[<span class="st">'seller_id'</span>]<span class="sc">.</span>nunique()<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"rows              : </span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">:,}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>unique product_id : 29,801
+unique seller_id  : 8,515
+rows              : 38,507</code></pre>
+</div>
+</div>
+<p>29,801 distinct products and 8,515 distinct sellers, but 38,507 rows, so on average a product in this sample was clicked ~1.3 times. That’s mild, but it’s not zero, and it means any chart that counts <em>rows</em> per <code>category</code> is answering “which categories get clicked most,” while a chart that counts <em>distinct <code>product_id</code></em> per <code>category</code> is answering “which categories have the most catalog depth in this sample.” Those are different questions, and we’ll keep both readings in view in §3.</p>
+<p>It also matters for modeling later: a naive row-level train/test split for the Part 2 classifier risks putting the same <code>product_id</code> (same title, same tags, same everything except the search that led to the click) on both sides of the split. We’ll flag this again in §8 as something the classification notebook needs to handle explicitly, not something to solve here.</p>
+<div id="27715df0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.568378Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.568195Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.577510Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.577261Z&quot;}}" data-execution_count="56">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df.info()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 38507 entries, 0 to 38506
+Data columns (total 15 columns):
+ #   Column             Non-Null Count  Dtype         
+---  ------             --------------  -----         
+ 0   product_id         38507 non-null  int64         
+ 1   seller_id          38507 non-null  int64         
+ 2   query              38507 non-null  object        
+ 3   search_page        38507 non-null  int64         
+ 4   position           38507 non-null  int64         
+ 5   title              38507 non-null  object        
+ 6   concatenated_tags  38505 non-null  object        
+ 7   creation_date      38507 non-null  datetime64[ns]
+ 8   price              38507 non-null  float64       
+ 9   weight             38449 non-null  float64       
+ 10  express_delivery   38507 non-null  int64         
+ 11  minimum_quantity   38507 non-null  int64         
+ 12  view_counts        38507 non-null  int64         
+ 13  order_counts       18117 non-null  float64       
+ 14  category           38507 non-null  object        
+dtypes: datetime64[ns](1), float64(3), int64(7), object(4)
+memory usage: 4.4+ MB</code></pre>
+</div>
+</div>
+</section>
+<section id="data-quality" class="level2">
+<h2 class="anchored" data-anchor-id="data-quality">3. Data quality</h2>
+<div id="b170ba80" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.578579Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.578472Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.586912Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.586646Z&quot;}}" data-execution_count="57">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>missing <span class="op">=</span> df.isna().<span class="bu">sum</span>()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>missing <span class="op">=</span> missing[missing <span class="op">&gt;</span> <span class="dv">0</span>]</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({<span class="st">"n_missing"</span>: missing, <span class="st">"pct_missing"</span>: (<span class="dv">100</span> <span class="op">*</span> missing <span class="op">/</span> <span class="bu">len</span>(df)).<span class="bu">round</span>(<span class="dv">2</span>)})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="57">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">n_missing</th>
+<th data-quarto-table-cell-role="th">pct_missing</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">concatenated_tags</th>
+<td>2</td>
+<td>0.01</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">weight</th>
+<td>58</td>
+<td>0.15</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">order_counts</th>
+<td>20390</td>
+<td>52.95</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Three columns have gaps, and each one gets a different treatment because each one means something different:</p>
+<p><strong><code>order_counts</code></strong> is missing for 53% of rows, at first glance alarming, but look at what’s <em>not</em> missing:</p>
+<div id="d9daf49c" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.588047Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.587935Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.592803Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.592583Z&quot;}}" data-execution_count="58">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>non_null_orders <span class="op">=</span> df[<span class="st">"order_counts"</span>].dropna()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"non-null order_counts == 0 : </span><span class="sc">{</span>(non_null_orders <span class="op">==</span> <span class="dv">0</span>)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> of </span><span class="sc">{</span><span class="bu">len</span>(non_null_orders)<span class="sc">:,}</span><span class="ss">"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>non_null_orders.describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>non-null order_counts == 0 : 0 of 18,117</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="58">
+<pre><code>count    18117.00000
+mean        27.38141
+std         60.53336
+min          1.00000
+25%          8.00000
+50%         15.00000
+75%         26.00000
+max       2460.00000
+Name: order_counts, dtype: float64</code></pre>
+</div>
+</div>
+<p>Zero. Not one of the 18,117 non-null <code>order_counts</code> values is actually <code>0</code>. The minimum recorded value is <code>1</code>. That’s a strong signal that this column was only populated when a product had at least one order in the window, and left blank otherwise, rather than being missing at random. So a missing <code>order_counts</code> almost certainly means “zero orders,” and we fill it with <code>0</code> accordingly, not a guess, but the reading the data itself supports.</p>
+<p><strong><code>concatenated_tags</code></strong> is missing for only 2 rows. Both are products with a <code>title</code> and <code>category</code> like any other; the seller simply left the tags field blank. We fill these with an empty string <code>''</code>, which our tokenizer already treats as zero tokens, so nothing special is needed downstream.</p>
+<p><strong><code>weight</code></strong> is missing for 58 rows (0.15%). This is small enough that dropping the rows wouldn’t meaningfully change any distribution, but dropping still throws away real click events for no necessary reason, and other columns (<code>price</code>, <code>title</code>, <code>query</code>, <code>category</code>, …) are perfectly usable for those rows. So instead of dropping, we keep the rows and add an explicit <code>weight_missing</code> flag, leaving <code>weight</code> itself as <code>NaN</code>. Anything computed <em>from</em> <code>weight</code> (like <code>price_per_weight</code> in §4) will then propagate <code>NaN</code> for these rows automatically, rather than silently blending “unknown” with some numeric stand-in.</p>
+<div id="10985974" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.593814Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.593700Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.616680Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.616410Z&quot;}}" data-execution_count="59">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"order_counts"</span>] <span class="op">=</span> df[<span class="st">"order_counts"</span>].fillna(<span class="dv">0</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"concatenated_tags"</span>] <span class="op">=</span> df[<span class="st">"concatenated_tags"</span>].fillna(<span class="st">""</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"weight_missing"</span>] <span class="op">=</span> df[<span class="st">"weight"</span>].isna()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"duplicated rows: </span><span class="sc">{</span>df<span class="sc">.</span>duplicated()<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"weight == 0    : </span><span class="sc">{</span>(df[<span class="st">'weight'</span>] <span class="op">==</span> <span class="dv">0</span>)<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:,}</span><span class="ss"> (</span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> (df[<span class="st">'weight'</span>] <span class="op">==</span> <span class="dv">0</span>)<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss">%)"</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"weight missing : </span><span class="sc">{</span>df[<span class="st">'weight_missing'</span>]<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> df[<span class="st">'weight_missing'</span>]<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss">%)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>duplicated rows: 0
+weight == 0    : 4,398 (11.4%)
+weight missing : 58 (0.15%)</code></pre>
+</div>
+</div>
+<p>Worth calling out: <code>weight == 0</code> (11.4% of rows) and <code>weight</code> missing (0.15% of rows) are two different things. A weight of exactly zero is a value the seller entered; a missing weight is a value nobody entered. We’ll treat these differently everywhere <code>weight</code> is used, starting with <code>price_per_weight</code> below.</p>
+<section id="the-order_probability-anomaly" class="level3">
+<h3 class="anchored" data-anchor-id="the-order_probability-anomaly">The <code>order_probability</code> anomaly</h3>
+<p><code>order_counts / view_counts</code> should be a legitimate estimate of the probability that a view turns into an order, so it should never exceed 1. Let’s check.</p>
+<div id="dd109d62" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.618024Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.617825Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.622088Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.621872Z&quot;}}" data-execution_count="60">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"order_probability"</span>] <span class="op">=</span> order_probability(df[<span class="st">"order_counts"</span>], df[<span class="st">"view_counts"</span>])</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>anomaly <span class="op">=</span> df[df[<span class="st">"order_probability"</span>] <span class="op">&gt;</span> <span class="dv">1</span>]</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"rows with order_probability &gt; 1 : </span><span class="sc">{</span><span class="bu">len</span>(anomaly)<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> <span class="bu">len</span>(anomaly) <span class="op">/</span> <span class="bu">len</span>(df)<span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>anomaly[<span class="st">"category"</span>].value_counts()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>rows with order_probability &gt; 1 : 27 (0.07%)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="60">
+<pre><code>category
+Decoração             9
+Bebê                  8
+Lembrancinhas         8
+Outros                1
+Bijuterias e Jóias    1
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p>27 rows (0.07%) have more recorded orders than views, presumably orders placed outside of a search-driven view, or a quirk of how the three-month windows for each count were sampled. Before dropping them, the question that matters is whether they’re concentrated somewhere (a specific category, a price range). If they were, dropping could quietly bias the remaining data.</p>
+<div id="6aa9d41d" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.622763Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.622684Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.630286Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.630008Z&quot;}}" data-execution_count="61">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>share_of_category <span class="op">=</span> (</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="dv">100</span> <span class="op">*</span> anomaly[<span class="st">"category"</span>].value_counts() <span class="op">/</span> df[<span class="st">"category"</span>].value_counts()</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"anomaly rows as a </span><span class="sc">% o</span><span class="st">f each category's own rows:"</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(share_of_category.sort_values(ascending<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"anomaly price stats vs. overall price stats:"</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.concat([anomaly[<span class="st">"price"</span>].describe(), df[<span class="st">"price"</span>].describe()], axis<span class="op">=</span><span class="dv">1</span>, keys<span class="op">=</span>[<span class="st">"anomaly"</span>, <span class="st">"overall"</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>anomaly rows as a % of each category's own rows:
+category
+Bebê                  0.11
+Bijuterias e Jóias    0.11
+Decoração             0.10
+Outros                0.09
+Lembrancinhas         0.05
+Papel e Cia            NaN
+Name: count, dtype: float64
+
+anomaly price stats vs. overall price stats:
+           anomaly       overall
+count    27.000000  38507.000000
+mean    102.070000     84.054157
+std     208.812541    211.805310
+min       3.090000      0.070000
+25%      25.945000     12.750000
+50%      38.250000     28.490000
+75%      83.570000     90.000000
+max    1100.000000  11509.380000</code></pre>
+</div>
+</div>
+<p>No concentration: the anomaly touches 0.05–0.11% of rows in every category it appears in at all (and doesn’t appear in <code>Papel e Cia</code>), and the price distribution of the anomalous rows looks like a smaller, noisier version of the overall price distribution, not a distinct population. With no evidence of a systematic pattern and a volume this small, we drop these 27 rows rather than flag them. Unlike <code>weight</code>, there’s no case here for keeping and flagging, since the anomaly makes <code>order_probability</code> itself indefensible for these specific rows without recomputing it.</p>
+<div id="3949e944" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.631229Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.631111Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.639526Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.639266Z&quot;}}" data-execution_count="62">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[df[<span class="st">"order_probability"</span>] <span class="op">&lt;=</span> <span class="dv">1</span>].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">:,}</span><span class="ss"> rows remain"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>38,480 rows remain</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="category-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="category-distribution">4. Category distribution</h2>
+<p><code>category</code> is the target for Part 2’s classifier, so its distribution matters twice: once for understanding the catalog, and once for anticipating that a classifier trained on it will need to handle real class imbalance. As flagged in §2, we look at this both per row (click volume) and per distinct product (catalog depth).</p>
+<div id="caa141e8" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.640312Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.640212Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.774336Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.774111Z&quot;}}" data-execution_count="63">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>row_level <span class="op">=</span> df[<span class="st">"category"</span>].value_counts()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>product_level <span class="op">=</span> df.drop_duplicates(<span class="st">"product_id"</span>)[<span class="st">"category"</span>].value_counts().reindex(row_level.index)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="fl">4.5</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].barh(row_level.index[::<span class="op">-</span><span class="dv">1</span>], row_level.values[::<span class="op">-</span><span class="dv">1</span>], color<span class="op">=</span>PRIMARY)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">"Rows (clicks) per category"</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_xlabel(<span class="st">"Count"</span>)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].barh(product_level.index[::<span class="op">-</span><span class="dv">1</span>], product_level.values[::<span class="op">-</span><span class="dv">1</span>], color<span class="op">=</span>PRIMARY)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">"Distinct products per category"</span>)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_xlabel(<span class="st">"Count"</span>)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_exploratory_data_analysis_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Both readings tell the same story at different magnitudes: <code>Lembrancinhas</code> dominates (46% of rows, 43% of distinct products), <code>Bijuterias e Jóias</code> is by far the smallest (2.5% of rows, 2.9% of products), and the ranking of all six categories is identical either way. So for this dataset, the row-vs-product distinction changes the exact percentages but not the qualitative picture: the imbalance itself is real and roughly 18:1 between the largest and smallest class, something Part 2’s evaluation will need to account for (accuracy alone would reward a classifier for just guessing <code>Lembrancinhas</code>).</p>
+<p>It’s also worth checking whether that same imbalance shows up in <em>engagement</em> (views and orders), or whether some categories convert disproportionately well despite a smaller catalog.</p>
+<div id="d7b210b0" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.775340Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.775237Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.849718Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.849396Z&quot;}}" data-execution_count="64">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>views_share <span class="op">=</span> (<span class="dv">100</span> <span class="op">*</span> df.groupby(<span class="st">"category"</span>)[<span class="st">"view_counts"</span>].<span class="bu">sum</span>() <span class="op">/</span> df[<span class="st">"view_counts"</span>].<span class="bu">sum</span>()).reindex(row_level.index)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>orders_share <span class="op">=</span> (<span class="dv">100</span> <span class="op">*</span> df.groupby(<span class="st">"category"</span>)[<span class="st">"order_counts"</span>].<span class="bu">sum</span>() <span class="op">/</span> df[<span class="st">"order_counts"</span>].<span class="bu">sum</span>()).reindex(row_level.index)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.arange(<span class="bu">len</span>(row_level))</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>height <span class="op">=</span> <span class="fl">0.36</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>ax.barh(y <span class="op">+</span> height <span class="op">/</span> <span class="dv">2</span>, views_share.values, height<span class="op">=</span>height, color<span class="op">=</span>PRIMARY, label<span class="op">=</span><span class="st">"Share of views"</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>ax.barh(y <span class="op">-</span> height <span class="op">/</span> <span class="dv">2</span>, orders_share.values, height<span class="op">=</span>height, color<span class="op">=</span>SECONDARY, label<span class="op">=</span><span class="st">"Share of orders"</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>ax.set_yticks(y)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>ax.set_yticklabels(row_level.index)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"</span><span class="sc">% o</span><span class="st">f total"</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Share of views and orders by category"</span>)</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>ax.legend(frameon<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_exploratory_data_analysis_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><code>Bebê</code> is the interesting case: it’s the third-largest category by product count (18%), but pulls a disproportionate 24% of views and 28% of orders: it converts better than its catalog size alone would predict. <code>Lembrancinhas</code> shows the opposite pattern for orders specifically (41% of orders vs.&nbsp;47% of views), high traffic, slightly lower conversion. Neither of these is something to correct for in an EDA notebook, but they’re useful context: a recommender that leans purely on popularity (view/order counts) will already skew toward <code>Bebê</code> and <code>Lembrancinhas</code> regardless of what the query says, which is exactly the kind of thing a query-aware system is supposed to do better than.</p>
+</section>
+<section id="product-level-numeric-features" class="level2">
+<h2 class="anchored" data-anchor-id="product-level-numeric-features">5. Product-level numeric features</h2>
+<p>Now the rest of the numeric columns: <code>price</code>, <code>weight</code>, <code>minimum_quantity</code>, <code>express_delivery</code>, <code>view_counts</code>, <code>order_counts</code>, plus <code>price_per_weight</code>, which we derive here.</p>
+<div id="818022b4" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.850770Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.850654Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:00.869559Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:00.869292Z&quot;}}" data-execution_count="65">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"price_per_weight"</span>] <span class="op">=</span> price_per_weight(df[<span class="st">"price"</span>], df[<span class="st">"weight"</span>])</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"price_per_weight nulls: </span><span class="sc">{</span>df[<span class="st">'price_per_weight'</span>]<span class="sc">.</span>isna()<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> (should equal weight nulls: </span><span class="sc">{</span>df[<span class="st">'weight'</span>]<span class="sc">.</span>isna()<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">"price"</span>, <span class="st">"weight"</span>, <span class="st">"price_per_weight"</span>, <span class="st">"minimum_quantity"</span>, <span class="st">"view_counts"</span>, <span class="st">"order_counts"</span>]].describe()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>price_per_weight nulls: 58 (should equal weight nulls: 58)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="65">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">price</th>
+<th data-quarto-table-cell-role="th">weight</th>
+<th data-quarto-table-cell-role="th">price_per_weight</th>
+<th data-quarto-table-cell-role="th">minimum_quantity</th>
+<th data-quarto-table-cell-role="th">view_counts</th>
+<th data-quarto-table-cell-role="th">order_counts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">count</th>
+<td>38480.000000</td>
+<td>38422.000000</td>
+<td>38422.000000</td>
+<td>38480.000000</td>
+<td>38480.000000</td>
+<td>38480.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">mean</th>
+<td>84.041516</td>
+<td>361.075191</td>
+<td>14.366134</td>
+<td>14.602391</td>
+<td>545.838773</td>
+<td>12.820166</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">std</th>
+<td>211.809533</td>
+<td>1812.845573</td>
+<td>81.253071</td>
+<td>43.783599</td>
+<td>1416.942852</td>
+<td>43.258841</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">min</th>
+<td>0.070000</td>
+<td>0.000000</td>
+<td>0.000034</td>
+<td>0.000000</td>
+<td>1.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">25%</th>
+<td>12.750000</td>
+<td>6.000000</td>
+<td>0.228834</td>
+<td>3.000000</td>
+<td>119.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">50%</th>
+<td>28.470000</td>
+<td>9.000000</td>
+<td>1.327889</td>
+<td>7.000000</td>
+<td>243.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">75%</th>
+<td>90.000000</td>
+<td>107.000000</td>
+<td>7.272601</td>
+<td>16.000000</td>
+<td>521.000000</td>
+<td>14.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">max</th>
+<td>11509.380000</td>
+<td>65009.000000</td>
+<td>5563.860000</td>
+<td>3000.000000</td>
+<td>45010.000000</td>
+<td>2460.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The null count check confirms the design decision from §3 worked as intended: <code>price_per_weight</code> is <code>NaN</code> for exactly the rows where <code>weight</code> was missing, and nowhere else: no silent blending of “unknown” with a numeric placeholder.</p>
+<p>The <code>describe()</code> table shows the pattern the challenge spec itself warns about (“[prices] may not always reflect realistic market values”): <code>price</code> ranges from R$0.07 to R$11,509, with a mean of 84 sitting well above the median of 28, heavily right-skewed (skewness ≈ 17.5). <code>weight</code> and <code>view_counts</code> show the same shape (skewness ≈ 16.8 and ≈ 14.8 respectively). All three need a log scale to plot sensibly, and any model using them raw should expect a few extreme outliers to dominate unless that’s addressed.</p>
+<div id="a2f15521" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:00.870544Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:00.870432Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:01.338427Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:01.337812Z&quot;}}" data-execution_count="66">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">4</span>))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, col <span class="kw">in</span> <span class="bu">zip</span>(axs, [<span class="st">"price"</span>, <span class="st">"weight"</span>, <span class="st">"view_counts"</span>]):</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    sns.histplot(df[col], ax<span class="op">=</span>ax, color<span class="op">=</span>PRIMARY, bins<span class="op">=</span><span class="dv">40</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    ax.set_xscale(<span class="st">"symlog"</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    ax.set_yscale(<span class="st">"symlog"</span>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    ax.set_title(col)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_exploratory_data_analysis_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Even in log-log scale, all three keep a long right tail: a handful of products with very high price, weight, or view counts. This is expected for a marketplace catalog (a few products go viral or are simply expensive/heavy specialty items) and isn’t itself a data quality issue, but it does mean summary statistics like the mean are not very representative; the median and the shape of the distribution matter more here than any single number.</p>
+<p><code>express_delivery</code> is the one binary flag among these columns, so a two-color bar makes sense here (this is exactly the “compare two things” case the color choice in §1 was reserved for):</p>
+<div id="7a7b3539" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:01.339432Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:01.339342Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:01.387713Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:01.387519Z&quot;}}" data-execution_count="67">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>express_counts <span class="op">=</span> df[<span class="st">"express_delivery"</span>].value_counts().sort_index()</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="fl">4.5</span>, <span class="dv">4</span>))</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>ax.bar([<span class="st">"Not express"</span>, <span class="st">"Express"</span>], express_counts.values, color<span class="op">=</span>[SECONDARY, PRIMARY])</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Rows"</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Express delivery"</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, v <span class="kw">in</span> <span class="bu">enumerate</span>(express_counts.values):</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    ax.text(i, v, <span class="ss">f"</span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> v <span class="op">/</span> <span class="bu">len</span>(df)<span class="sc">:.0f}</span><span class="ss">%"</span>, ha<span class="op">=</span><span class="st">"center"</span>, va<span class="op">=</span><span class="st">"bottom"</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_exploratory_data_analysis_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>78% of clicked products offer express delivery: the large majority. Whether that reflects the overall catalog or just what tends to get clicked isn’t something this single chart can answer, but it’s a useful base rate to keep in mind: a classifier or recommender that ignores <code>express_delivery</code> entirely isn’t ignoring a 50/50 signal, it’s ignoring something already skewed 4-to-1.</p>
+<p>Finally, how do price, weight, and engagement vary <em>by category</em>? Boxplots on a log scale, one color throughout (the category is already the label on the x-axis, so a per-category rainbow would be redundant here, same reasoning as §4’s bar charts).</p>
+<div id="168afcc2" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:01.388772Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:01.388687Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:01.871772Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:01.871106Z&quot;}}" data-execution_count="68">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">13</span>, <span class="dv">9</span>))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, col <span class="kw">in</span> <span class="bu">zip</span>(</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    axs.flat, [<span class="st">"price"</span>, <span class="st">"weight"</span>, <span class="st">"view_counts"</span>, <span class="st">"order_counts"</span>]</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>):</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    sns.boxplot(data<span class="op">=</span>df, x<span class="op">=</span><span class="st">"category"</span>, y<span class="op">=</span>col, ax<span class="op">=</span>ax, color<span class="op">=</span>PRIMARY)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    ax.set_yscale(<span class="st">"symlog"</span>)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> label <span class="kw">in</span> ax.get_xticklabels():</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>        label.set_rotation(<span class="dv">25</span>)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>        label.set_ha(<span class="st">"right"</span>)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    ax.set_title(col)</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">""</span>)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_exploratory_data_analysis_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><code>Decoração</code> stands out with a visibly higher weight distribution than the rest, consistent with home-decor items (furniture pieces, large wall art) tending to be heavier than, say, party favors or paper crafts. <code>price</code> varies less dramatically across categories than weight does, and <code>view_counts</code>/<code>order_counts</code> echo the engagement pattern already seen in §4 (<code>Bebê</code> pulling ahead of its catalog share). None of these differences look large enough on their own to make <code>category</code> trivially separable from numeric features alone, which is exactly why Part 2 will need <code>title</code>/<code>concatenated_tags</code> text as well, not just these numeric columns.</p>
+</section>
+<section id="text-features-tags-title" class="level2">
+<h2 class="anchored" data-anchor-id="text-features-tags-title">6. Text features: tags &amp; title</h2>
+<p>Seller-provided tags and titles are unstructured text, but we can still extract useful signal from them: how much information a seller provided, and what vocabulary shows up most often.</p>
+<section id="choosing-a-length-feature-characters-or-words" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-a-length-feature-characters-or-words">Choosing a length feature: characters or words?</h3>
+<p>There are two natural ways to measure “how much text is here”: count words, or count characters. They’re strongly related but not identical, so it’s worth deciding deliberately which one to keep rather than carrying both forward.</p>
+<div id="22f784b1" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:01.873151Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:01.873032Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:02.597519Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:02.596895Z&quot;}}" data-execution_count="69">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>text_cols <span class="op">=</span> [<span class="st">"concatenated_tags"</span>, <span class="st">"title"</span>, <span class="st">"query"</span>]</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> text_cols:</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    df[<span class="ss">f"n_words_</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">"</span>] <span class="op">=</span> df[col].<span class="bu">map</span>(word_count)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    df[<span class="ss">f"n_chars_</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">"</span>] <span class="op">=</span> df[col].<span class="bu">map</span>(char_length)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>feature_cols <span class="op">=</span> [<span class="ss">f"</span><span class="sc">{</span>prefix<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> col <span class="kw">in</span> text_cols <span class="cf">for</span> prefix <span class="kw">in</span> (<span class="st">"n_words"</span>, <span class="st">"n_chars"</span>)]</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>df[feature_cols].corr(numeric_only<span class="op">=</span><span class="va">True</span>).loc[</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    [<span class="ss">f"n_words_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> c <span class="kw">in</span> text_cols], [<span class="ss">f"n_chars_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> c <span class="kw">in</span> text_cols]</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="69">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">n_chars_concatenated_tags</th>
+<th data-quarto-table-cell-role="th">n_chars_title</th>
+<th data-quarto-table-cell-role="th">n_chars_query</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">n_words_concatenated_tags</th>
+<td>0.980424</td>
+<td>0.083196</td>
+<td>-0.009894</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">n_words_title</th>
+<td>0.007967</td>
+<td>0.854144</td>
+<td>0.215439</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">n_words_query</th>
+<td>-0.072988</td>
+<td>0.216527</td>
+<td>0.854662</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Each field’s own word-count and character-count are highly correlated with each other (as expected: more words usually means more characters), and there’s little cross-field correlation, so this is really three separate choices (one per field), not one. To choose between the word-count and character-count variant <em>within</em> each field, we look at how many distinct values each one actually takes: a coarser feature (fewer distinct values) throws away more information than a finer one at the same nominal “size.”</p>
+<div id="08142071" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:02.599936Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:02.599699Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:02.603424Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:02.603183Z&quot;}}" data-execution_count="70">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> text_cols:</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    n_word_vals <span class="op">=</span> df[<span class="ss">f"n_words_</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">"</span>].nunique()</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    n_char_vals <span class="op">=</span> df[<span class="ss">f"n_chars_</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">"</span>].nunique()</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>col<span class="sc">:20s}</span><span class="ss"> distinct word-counts: </span><span class="sc">{</span>n_word_vals<span class="sc">:&gt;4}</span><span class="ss">   distinct char-counts: </span><span class="sc">{</span>n_char_vals<span class="sc">:&gt;4}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>concatenated_tags    distinct word-counts:   67   distinct char-counts:  328
+title                distinct word-counts:   13   distinct char-counts:   58
+query                distinct word-counts:   13   distinct char-counts:   70</code></pre>
+</div>
+</div>
+<p>For every field, the character-count variant has far more distinct values than the word-count variant (e.g.&nbsp;<code>title</code>: 58 distinct character-lengths vs.&nbsp;only 13 distinct word-counts): the word-count feature is heavily discretized (most titles are somewhere between 3 and 8 words, full stop), while the character-count captures much finer variation. We keep the <code>len_*</code> (character-count) variant for each field and drop the <code>n_words_*</code> variant.</p>
+<div id="1cd8c7e6" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:02.604568Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:02.604463Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:02.610962Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:02.610692Z&quot;}}" data-execution_count="71">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"len_tags"</span>] <span class="op">=</span> df[<span class="st">"n_chars_concatenated_tags"</span>]</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"len_title"</span>] <span class="op">=</span> df[<span class="st">"n_chars_title"</span>]</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"len_query"</span>] <span class="op">=</span> df[<span class="st">"n_chars_query"</span>]</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.drop(columns<span class="op">=</span>[c <span class="cf">for</span> c <span class="kw">in</span> df.columns <span class="cf">if</span> c.startswith(<span class="st">"n_words_"</span>) <span class="kw">or</span> c.startswith(<span class="st">"n_chars_"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="most-frequent-tags-and-title-words" class="level3">
+<h3 class="anchored" data-anchor-id="most-frequent-tags-and-title-words">Most frequent tags and title words</h3>
+<p>Tags aren’t full sentences, so we tokenize them without removing Portuguese stopwords (there’s essentially nothing but content words in a tag list anyway). Titles <em>are</em> closer to natural language, so stopwords are dropped there to keep the frequency table meaningful.</p>
+<div id="0c38c80e" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:02.612142Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:02.612046Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:03.113675Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:03.113396Z&quot;}}" data-execution_count="72">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>all_tags <span class="op">=</span> [tag <span class="cf">for</span> tags <span class="kw">in</span> df[<span class="st">"concatenated_tags"</span>] <span class="cf">for</span> tag <span class="kw">in</span> tokenize(tags)]</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>tag_counts <span class="op">=</span> Counter(all_tags)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(all_tags)<span class="sc">:,}</span><span class="ss"> tag tokens, </span><span class="sc">{</span><span class="bu">len</span>(<span class="bu">set</span>(all_tags))<span class="sc">:,}</span><span class="ss"> distinct"</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>all_title_words <span class="op">=</span> [w <span class="cf">for</span> title <span class="kw">in</span> df[<span class="st">"title"</span>] <span class="cf">for</span> w <span class="kw">in</span> tokenize(title, drop_stopwords<span class="op">=</span><span class="va">True</span>)]</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>title_counts <span class="op">=</span> Counter(all_title_words)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">len</span>(all_title_words)<span class="sc">:,}</span><span class="ss"> title tokens, </span><span class="sc">{</span><span class="bu">len</span>(<span class="bu">set</span>(all_title_words))<span class="sc">:,}</span><span class="ss"> distinct"</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">13</span>, <span class="dv">5</span>))</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, counts, label <span class="kw">in</span> <span class="bu">zip</span>(axs, [tag_counts, title_counts], [<span class="st">"tags"</span>, <span class="st">"title words"</span>]):</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    top <span class="op">=</span> counts.most_common(<span class="dv">15</span>)</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    words, freqs <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>top)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    ax.barh(words[::<span class="op">-</span><span class="dv">1</span>], freqs[::<span class="op">-</span><span class="dv">1</span>], color<span class="op">=</span>PRIMARY)</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"Top 15 </span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Occurrences"</span>)</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>227,244 tag tokens, 7,598 distinct
+147,894 title tokens, 7,225 distinct</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_exploratory_data_analysis_files/figure-html/cell-21-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Tags and titles surface a near-identical vocabulary: <code>lembrancinha(s)</code>, <code>bebe</code>, <code>maternidade</code>, <code>kit</code>, <code>dia</code>, <code>pais</code>, <code>festa</code>, <code>croche</code>, <code>decoracao</code>, which isn’t surprising (sellers write both to be found for the same things) but is a useful sanity check that these two text fields aren’t capturing meaningfully different information about a product. It also previews the vocabulary we’ll compare against <code>query</code> in §7: if the same words dominate tags, titles, <em>and</em> queries, that would be direct evidence that a query alone carries enough signal to recover a product’s likely category, which is the central question this whole project is built around.</p>
+</section>
+</section>
+<section id="search-query-deep-dive" class="level2">
+<h2 class="anchored" data-anchor-id="search-query-deep-dive">7. Search query deep dive</h2>
+<p>This is the section that matters most for the project’s actual thesis, and it’s also the part the original 2021 version of this analysis gave the least attention: <code>query</code> was treated with the same shallow word-frequency pass as <code>title</code>/<code>concatenated_tags</code> and never compared against <code>category</code>. Since notebooks 03 (intent modeling) and 05 (system integration) both depend on understanding query text well, we go deeper here.</p>
+<section id="length-and-repetition" class="level3">
+<h3 class="anchored" data-anchor-id="length-and-repetition">Length and repetition</h3>
+<p>We already picked <code>len_query</code> (characters) as the length feature in §6. How much of the traffic is repeat queries, versus one-off searches?</p>
+<div id="713fcbe1" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:03.114681Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:03.114580Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:03.122550Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:03.122362Z&quot;}}" data-execution_count="73">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>n_unique_queries <span class="op">=</span> df[<span class="st">"query"</span>].nunique()</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>n_unique_queries<span class="sc">:,}</span><span class="ss"> distinct queries across </span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">:,}</span><span class="ss"> rows (</span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> n_unique_queries <span class="op">/</span> <span class="bu">len</span>(df)<span class="sc">:.1f}</span><span class="ss">% unique)"</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>query_counts <span class="op">=</span> df[<span class="st">"query"</span>].value_counts()</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>top20_share <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> query_counts.head(<span class="dv">20</span>).<span class="bu">sum</span>() <span class="op">/</span> <span class="bu">len</span>(df)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>top100_share <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> query_counts.head(<span class="dv">100</span>).<span class="bu">sum</span>() <span class="op">/</span> <span class="bu">len</span>(df)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>singletons <span class="op">=</span> (query_counts <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>()</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"top 20 queries account for  </span><span class="sc">{</span>top20_share<span class="sc">:.1f}</span><span class="ss">% of all rows"</span>)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"top 100 queries account for </span><span class="sc">{</span>top100_share<span class="sc">:.1f}</span><span class="ss">% of all rows"</span>)</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>singletons<span class="sc">:,}</span><span class="ss"> queries (</span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> singletons <span class="op">/</span> n_unique_queries<span class="sc">:.1f}</span><span class="ss">% of distinct queries) appear exactly once"</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>query_counts.head(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>6,392 distinct queries across 38,480 rows (16.6% unique)
+top 20 queries account for  5.5% of all rows
+top 100 queries account for 15.9% of all rows
+1,427 queries (22.3% of distinct queries) appear exactly once</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="73">
+<pre><code>query
+bolsa maternidade            152
+dia dos pais                 148
+lembrancinha dia dos pais    127
+porta maternidade            126
+batizado                     125
+lembrancinha                 122
+lembrancinha maternidade     122
+lembrancinha batizado        121
+lembrancinhas maternidade    117
+presente dia dos pais        106
+Name: count, dtype: int64</code></pre>
+</div>
+</div>
+<p>Search traffic is concentrated but not extremely so: the top 20 queries alone account for only 5.5% of all rows, and the top 100 for 16%. At the other end, 22% of distinct queries appear only once in the whole sample. This is a long tail with a short, dense head, relevant for notebook 03’s clustering, since it means a query-level intent model will need to generalize well beyond the most common queries rather than just memorizing them, but it also means the head alone (a few hundred queries) already covers a meaningful share of real traffic and is worth spot checking by hand later.</p>
+</section>
+<section id="does-the-query-hint-at-the-category" class="level3">
+<h3 class="anchored" data-anchor-id="does-the-query-hint-at-the-category">Does the query hint at the category?</h3>
+<p>This is the sharpest test EDA can run on this project’s core question before any model exists: if we group rows by <code>category</code> and look at the most common query words <em>within</em> each group, do we see visibly different vocabularies, or is it the same handful of generic words everywhere?</p>
+<div id="7ff59b0e" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:03.123344Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:03.123248Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:03.603159Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:03.602729Z&quot;}}" data-execution_count="74">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">8</span>))</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (cat, sub) <span class="kw">in</span> <span class="bu">zip</span>(axs.flat, df.groupby(<span class="st">"category"</span>)):</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    tokens <span class="op">=</span> [t <span class="cf">for</span> q <span class="kw">in</span> sub[<span class="st">"query"</span>] <span class="cf">for</span> t <span class="kw">in</span> tokenize(q, drop_stopwords<span class="op">=</span><span class="va">True</span>)]</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    top <span class="op">=</span> Counter(tokens).most_common(<span class="dv">8</span>)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    words, freqs <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>top)</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    ax.barh(words[::<span class="op">-</span><span class="dv">1</span>], freqs[::<span class="op">-</span><span class="dv">1</span>], color<span class="op">=</span>PRIMARY)</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"</span><span class="sc">{</span>cat<span class="sc">}</span><span class="ss">  (n=</span><span class="sc">{</span><span class="bu">len</span>(sub)<span class="sc">:,}</span><span class="ss">)"</span>)</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_exploratory_data_analysis_files/figure-html/cell-23-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The vocabularies are clearly distinct: <code>Bijuterias e Jóias</code> queries lead with <code>alianca</code> (“wedding ring”), <code>anel</code>, <code>pulseira</code>, <code>ouro</code>, <code>prata</code>, jewelry-specific words that essentially never show up elsewhere. <code>Decoração</code> leads with <code>parede</code> (“wall”), <code>croche</code>, <code>tapete</code>, <code>quadro</code>, home-decor words. <code>Bebê</code> leads with <code>maternidade</code>, <code>berco</code> (“crib”), <code>menino</code>. Even the two most overlapping categories, <code>Lembrancinhas</code> and <code>Papel e Cia</code>, share <code>dia</code>/<code>pais</code> (from “dia dos pais,” Father’s Day, a huge seasonal driver in this dataset) but diverge on their next-most-common words (<code>caderno</code>, <code>planner</code>, <code>convite</code> for <code>Papel e Cia</code> vs.&nbsp;<code>personalizada</code>, <code>festa</code>, <code>anos</code> for <code>Lembrancinhas</code>).</p>
+<p>This is early, informal evidence (nothing here is a model), but it’s a genuinely encouraging sign for the project’s premise: category does look recoverable from query text alone, at least in aggregate. That’s exactly the kind of finding the challenge spec means when it says EDA insights “will likely inspire ideas” for the next stage.</p>
+</section>
+<section id="vocabulary-overlap-between-query-and-product-text" class="level3">
+<h3 class="anchored" data-anchor-id="vocabulary-overlap-between-query-and-product-text">Vocabulary overlap between query and product text</h3>
+<p>A different angle on the same question: how much of the <em>query</em> vocabulary also shows up in <code>title</code> or <code>concatenated_tags</code>? High overlap would mean queries and product text share a vocabulary (good news for a query → category classifier that has to work with text alone, per Part 5 of the challenge, since it means query text isn’t some alien vocabulary the product-text classifier never saw).</p>
+<div id="eb28ebeb" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:03.604289Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:03.604194Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:04.024643Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:04.024334Z&quot;}}" data-execution_count="75">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>query_vocab <span class="op">=</span> {t <span class="cf">for</span> q <span class="kw">in</span> df[<span class="st">"query"</span>] <span class="cf">for</span> t <span class="kw">in</span> tokenize(q, drop_stopwords<span class="op">=</span><span class="va">True</span>)}</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>title_vocab <span class="op">=</span> {t <span class="cf">for</span> t_ <span class="kw">in</span> df[<span class="st">"title"</span>] <span class="cf">for</span> t <span class="kw">in</span> tokenize(t_, drop_stopwords<span class="op">=</span><span class="va">True</span>)}</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>tags_vocab <span class="op">=</span> {t <span class="cf">for</span> tg <span class="kw">in</span> df[<span class="st">"concatenated_tags"</span>] <span class="cf">for</span> t <span class="kw">in</span> tokenize(tg, drop_stopwords<span class="op">=</span><span class="va">True</span>)}</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>product_vocab <span class="op">=</span> title_vocab <span class="op">|</span> tags_vocab</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>overlap <span class="op">=</span> <span class="bu">len</span>(query_vocab <span class="op">&amp;</span> product_vocab)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"query vocabulary   : </span><span class="sc">{</span><span class="bu">len</span>(query_vocab)<span class="sc">:,}</span><span class="ss"> distinct words"</span>)</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"product vocabulary : </span><span class="sc">{</span><span class="bu">len</span>(product_vocab)<span class="sc">:,}</span><span class="ss"> distinct words (title + tags)"</span>)</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"overlap            : </span><span class="sc">{</span>overlap<span class="sc">:,}</span><span class="ss"> (</span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> overlap <span class="op">/</span> <span class="bu">len</span>(query_vocab)<span class="sc">:.1f}</span><span class="ss">% of query vocabulary)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>query vocabulary   : 2,447 distinct words
+product vocabulary : 11,145 distinct words (title + tags)
+overlap            : 2,310 (94.4% of query vocabulary)</code></pre>
+</div>
+</div>
+<p>94% of the words people search with also appear somewhere in product titles or tags. That’s a high floor of shared vocabulary to build on. It’s not row-level evidence though: it only says the <em>vocabularies</em> overlap globally, not that any given query’s words appear in the title of the specific product that was clicked. That’s the next, stricter check.</p>
+<div id="4b2d808d" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:04.025951Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:04.025852Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:04.462202Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:04.461917Z&quot;}}" data-execution_count="76">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> query_title_token_overlap(query, title):</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    q_tokens <span class="op">=</span> <span class="bu">set</span>(tokenize(query, drop_stopwords<span class="op">=</span><span class="va">True</span>))</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> q_tokens:</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.nan</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    t_tokens <span class="op">=</span> <span class="bu">set</span>(tokenize(title, drop_stopwords<span class="op">=</span><span class="va">True</span>))</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">len</span>(q_tokens <span class="op">&amp;</span> t_tokens) <span class="op">/</span> <span class="bu">len</span>(q_tokens)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>overlap_ratio <span class="op">=</span> df.<span class="bu">apply</span>(<span class="kw">lambda</span> r: query_title_token_overlap(r[<span class="st">"query"</span>], r[<span class="st">"title"</span>]), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"mean share of query words also in the clicked title  : </span><span class="sc">{</span>overlap_ratio<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"median share                                          : </span><span class="sc">{</span>overlap_ratio<span class="sc">.</span>median()<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"rows with zero overlap                                 : </span><span class="sc">{</span><span class="dv">100</span> <span class="op">*</span> (overlap_ratio <span class="op">==</span> <span class="dv">0</span>)<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss">%"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>mean share of query words also in the clicked title  : 0.75
+median share                                          : 1.00
+rows with zero overlap                                 : 9.0%</code></pre>
+</div>
+</div>
+<p>At the row level, the median overlap is a full 1.0: for at least half of all clicks, <em>every</em> content word in the query also appears in the title of the product that got clicked. That’s consistent with a lot of search traffic being specific (“I know what I want and I typed it”). But 9% of rows have <em>zero</em> word overlap between query and title: clicks where the query text and the product’s own title share no words at all. That gap is a preview of a real distinction worth carrying into notebook 03: some searches look like specific, targeted lookups, and others look like something closer to browsing or a near-miss, which is exactly the kind of two-class split the challenge spec itself suggests as a starting point for intent classes.</p>
+</section>
+</section>
+<section id="consolidated-feature-correlation" class="level2">
+<h2 class="anchored" data-anchor-id="consolidated-feature-correlation">8. Consolidated feature correlation</h2>
+<p>Finally, one correlation matrix over every numeric feature built in this notebook (original and engineered), to see which ones move together. Correlation ranges from -1 to 1 with a meaningful zero midpoint, so this uses a diverging colormap (blue/red around a white center) rather than the single-hue sequential map used for magnitude charts earlier; a sequential map would make a strong negative correlation look identical to no correlation at all.</p>
+<div id="f9473c2b" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:04.463163Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:04.463062Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:04.775526Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:04.775314Z&quot;}}" data-execution_count="77">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"number_of_days"</span>] <span class="op">=</span> days_since(df[<span class="st">"creation_date"</span>], df[<span class="st">"creation_date"</span>].<span class="bu">max</span>())</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"views_per_day"</span>] <span class="op">=</span> rate_per_day(df[<span class="st">"view_counts"</span>], df[<span class="st">"number_of_days"</span>])</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"orders_per_day"</span>] <span class="op">=</span> rate_per_day(df[<span class="st">"order_counts"</span>], df[<span class="st">"number_of_days"</span>])</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>numeric_cols <span class="op">=</span> [</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"price"</span>, <span class="st">"weight"</span>, <span class="st">"price_per_weight"</span>, <span class="st">"minimum_quantity"</span>,</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"view_counts"</span>, <span class="st">"order_counts"</span>, <span class="st">"views_per_day"</span>, <span class="st">"orders_per_day"</span>, <span class="st">"order_probability"</span>,</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"number_of_days"</span>, <span class="st">"len_tags"</span>, <span class="st">"len_title"</span>, <span class="st">"len_query"</span>, <span class="st">"search_page"</span>, <span class="st">"position"</span>,</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>corr <span class="op">=</span> df[numeric_cols].corr(numeric_only<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>sns.heatmap(corr, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">".2f"</span>, cmap<span class="op">=</span><span class="st">"RdBu_r"</span>, center<span class="op">=</span><span class="dv">0</span>, vmin<span class="op">=-</span><span class="dv">1</span>, vmax<span class="op">=</span><span class="dv">1</span>, ax<span class="op">=</span>ax, cbar_kws<span class="op">=</span>{<span class="st">"label"</span>: <span class="st">"Pearson r"</span>})</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Correlation between numeric features"</span>)</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_exploratory_data_analysis_files/figure-html/cell-26-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><code>days_since</code> uses the maximum <code>creation_date</code> observed in the dataset as its reference point (rather than “today,” which the 2021 version of this analysis used and which made the feature, and everything derived from it, change value on every run). One product happens to share that exact reference date, giving it <code>number_of_days == 0</code>; <code>rate_per_day</code> handles that with the same <code>+1</code> shift <code>price_per_weight</code> already uses for <code>weight == 0</code>, for the same reason.</p>
+<p>Reading the heatmap: the strongest relationships are all internally consistent rather than surprising: <code>view_counts</code>/<code>views_per_day</code> (r ≈ 0.89) and <code>order_counts</code>/<code>orders_per_day</code> (r ≈ 0.91) are near-restatements of each other by construction, and <code>price</code>/<code>price_per_weight</code> (r ≈ 0.53) similarly share <code>price</code> as an input. The more informative relationships are the ones between <em>independent</em> pairs: <code>view_counts</code> and <code>order_counts</code> (r ≈ 0.61) confirm that more-viewed products do generally sell more, and <code>len_tags</code> correlates moderately with both <code>view_counts</code> (r ≈ 0.44) and <code>order_counts</code> (r ≈ 0.29): sellers who write more tags tend to get more engagement, though this is a correlation, not a causal claim (better sellers may simply do both things well). <code>number_of_days</code> stands out for correlating with almost nothing: how long a product has existed on the platform doesn’t predict how much it’s viewed or ordered in this sample.</p>
+<p>None of the text-length features (<code>len_tags</code>, <code>len_title</code>, <code>len_query</code>) correlate strongly with each other or with <code>price</code>/<code>weight</code>, which is a good sign for Part 2: it means they’re likely to carry information the numeric product features don’t already capture, rather than being redundant with them.</p>
+</section>
+<section id="key-findings-handoff" class="level2">
+<h2 class="anchored" data-anchor-id="key-findings-handoff">9. Key findings &amp; handoff</h2>
+<p><strong>Data quality decisions made in this notebook:</strong></p>
+<ul>
+<li><code>order_counts</code> nulls → filled with <code>0</code> (justified, not assumed: every non-null value is ≥ 1, so a null almost certainly means “zero orders in the window”).</li>
+<li><code>concatenated_tags</code> nulls (2 rows) → filled with <code>''</code>.</li>
+<li><code>weight</code> nulls (58 rows) → <strong>kept</strong>, flagged via <code>weight_missing</code>, left as <code>NaN</code> rather than imputed. <code>price_per_weight</code> propagates <code>NaN</code> for these rows automatically.</li>
+<li>27 rows with <code>order_probability &gt; 1</code> → dropped, after confirming the anomaly isn’t concentrated in any category or price range.</li>
+</ul>
+<p><strong>What we learned:</strong></p>
+<ul>
+<li>A row is a click, not a product (29,801 products, 38,507 rows), which changes how every “distribution by category” chart should be read, and is a data-leakage risk for a naive row-level train/test split in Part 2.</li>
+<li><code>category</code> is imbalanced roughly 18:1 (<code>Lembrancinhas</code> vs.&nbsp;<code>Bijuterias e Jóias</code>) at both the row and product level; Part 2’s evaluation needs a metric that isn’t fooled by this.</li>
+<li><code>price</code>, <code>weight</code>, and <code>view_counts</code> are all heavily right-skewed (skewness 15–17): log scale for visualization, and something to be aware of for any model sensitive to outliers.</li>
+<li>The character-count variant of a text-length feature (<code>len_*</code>) captures meaningfully more distinct values than the word-count variant, for every text field: <code>len_tags</code>, <code>len_title</code>, and <code>len_query</code> are the ones carried forward.</li>
+<li><strong>Query text shows real, visible signal for <code>category</code></strong>, even from simple word frequencies: distinct vocabularies per category, 94% query/product vocabulary overlap, and a median row-level query-title token overlap of 1.0. This is direct, if informal, support for the project’s core premise.</li>
+<li>A meaningful minority of clicks (9%) show <em>zero</em> word overlap between query and the clicked title, a hint that at least two different kinds of search behavior are mixed together in this data, which lines up with the “specific vs.&nbsp;exploratory” intent split the challenge spec suggests as a starting point for notebook 03.</li>
+</ul>
+<p><strong>Saved for the next notebook</strong>, per the persistence convention used in this project’s earlier Kaggle notebooks:</p>
+<div id="2bdd5fa9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-07-23T00:44:04.777129Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-07-23T00:44:04.777014Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-07-23T00:44:04.836283Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-07-23T00:44:04.835914Z&quot;}}" data-execution_count="78">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>feature_catalog <span class="op">=</span> [</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"product_id"</span>, <span class="st">"categorical"</span>, <span class="st">"original"</span>, <span class="st">"product_id"</span>, <span class="st">"Product identifier. Not unique per row."</span>),</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"seller_id"</span>, <span class="st">"categorical"</span>, <span class="st">"original"</span>, <span class="st">"seller_id"</span>, <span class="st">"Seller identifier."</span>),</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"query"</span>, <span class="st">"text"</span>, <span class="st">"original"</span>, <span class="st">"query"</span>, <span class="st">"Raw search query text."</span>),</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"search_page"</span>, <span class="st">"numerical"</span>, <span class="st">"original"</span>, <span class="st">"search_page"</span>, <span class="st">"Search results page (1-5)."</span>),</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"position"</span>, <span class="st">"numerical"</span>, <span class="st">"original"</span>, <span class="st">"position"</span>, <span class="st">"Position within the results page (0-38)."</span>),</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"title"</span>, <span class="st">"text"</span>, <span class="st">"original"</span>, <span class="st">"title"</span>, <span class="st">"Seller-provided product title."</span>),</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"concatenated_tags"</span>, <span class="st">"text"</span>, <span class="st">"original"</span>, <span class="st">"concatenated_tags"</span>, <span class="st">"Seller-provided tags, space-separated. Nulls filled with ''."</span>),</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"creation_date"</span>, <span class="st">"datetime"</span>, <span class="st">"original"</span>, <span class="st">"creation_date"</span>, <span class="st">"Product creation timestamp."</span>),</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"price"</span>, <span class="st">"numerical"</span>, <span class="st">"original"</span>, <span class="st">"price"</span>, <span class="st">"Product price, BRL."</span>),</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"weight"</span>, <span class="st">"numerical"</span>, <span class="st">"original"</span>, <span class="st">"weight"</span>, <span class="st">"Product weight, grams. NaN kept for missing (see weight_missing)."</span>),</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"express_delivery"</span>, <span class="st">"categorical"</span>, <span class="st">"original"</span>, <span class="st">"express_delivery"</span>, <span class="st">"0/1 flag."</span>),</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"minimum_quantity"</span>, <span class="st">"numerical"</span>, <span class="st">"original"</span>, <span class="st">"minimum_quantity"</span>, <span class="st">"Minimum purchase quantity."</span>),</span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"view_counts"</span>, <span class="st">"numerical"</span>, <span class="st">"original"</span>, <span class="st">"view_counts"</span>, <span class="st">"Views in the prior 3 months."</span>),</span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"order_counts"</span>, <span class="st">"numerical"</span>, <span class="st">"original"</span>, <span class="st">"order_counts"</span>, <span class="st">"Orders in the prior 3 months. Nulls filled with 0."</span>),</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"category"</span>, <span class="st">"categorical"</span>, <span class="st">"original"</span>, <span class="st">"category"</span>, <span class="st">"Target label for Part 2."</span>),</span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"weight_missing"</span>, <span class="st">"categorical"</span>, <span class="st">"engineered"</span>, <span class="st">"weight"</span>, <span class="st">"True where weight is NaN."</span>),</span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"order_probability"</span>, <span class="st">"numerical"</span>, <span class="st">"engineered"</span>, <span class="st">"order_counts, view_counts"</span>, <span class="st">"order_counts / view_counts. Rows &gt; 1 dropped."</span>),</span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"price_per_weight"</span>, <span class="st">"numerical"</span>, <span class="st">"engineered"</span>, <span class="st">"price, weight"</span>, <span class="st">"price / (weight + 1). NaN where weight is missing."</span>),</span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"number_of_days"</span>, <span class="st">"numerical"</span>, <span class="st">"engineered"</span>, <span class="st">"creation_date"</span>, <span class="st">"Days since max(creation_date) in the dataset."</span>),</span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"views_per_day"</span>, <span class="st">"numerical"</span>, <span class="st">"engineered"</span>, <span class="st">"view_counts, number_of_days"</span>, <span class="st">"view_counts / (number_of_days + 1)."</span>),</span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"orders_per_day"</span>, <span class="st">"numerical"</span>, <span class="st">"engineered"</span>, <span class="st">"order_counts, number_of_days"</span>, <span class="st">"order_counts / (number_of_days + 1)."</span>),</span>
+<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"len_tags"</span>, <span class="st">"numerical"</span>, <span class="st">"engineered"</span>, <span class="st">"concatenated_tags"</span>, <span class="st">"Character length of cleaned tags. Preferred over word count (more distinct values)."</span>),</span>
+<span id="cb43-24"><a href="#cb43-24" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"len_title"</span>, <span class="st">"numerical"</span>, <span class="st">"engineered"</span>, <span class="st">"title"</span>, <span class="st">"Character length of cleaned title."</span>),</span>
+<span id="cb43-25"><a href="#cb43-25" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"len_query"</span>, <span class="st">"numerical"</span>, <span class="st">"engineered"</span>, <span class="st">"query"</span>, <span class="st">"Character length of cleaned query."</span>),</span>
+<span id="cb43-26"><a href="#cb43-26" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb43-27"><a href="#cb43-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-28"><a href="#cb43-28" aria-hidden="true" tabindex="-1"></a>df_features <span class="op">=</span> pd.DataFrame(feature_catalog, columns<span class="op">=</span>[<span class="st">"Name"</span>, <span class="st">"Type"</span>, <span class="st">"Category"</span>, <span class="st">"Source"</span>, <span class="st">"Description"</span>])</span>
+<span id="cb43-29"><a href="#cb43-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-30"><a href="#cb43-30" aria-hidden="true" tabindex="-1"></a>df.to_parquet(<span class="st">"../data/processed/01_data.parquet"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb43-31"><a href="#cb43-31" aria-hidden="true" tabindex="-1"></a>df_features.to_parquet(<span class="st">"../data/processed/01_features.parquet"</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb43-32"><a href="#cb43-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-33"><a href="#cb43-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"saved </span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">:,}</span><span class="ss"> rows x </span><span class="sc">{</span>df<span class="sc">.</span>shape[<span class="dv">1</span>]<span class="sc">}</span><span class="ss"> columns -&gt; data/processed/01_data.parquet"</span>)</span>
+<span id="cb43-34"><a href="#cb43-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"saved </span><span class="sc">{</span><span class="bu">len</span>(df_features)<span class="sc">}</span><span class="ss"> feature rows -&gt; data/processed/01_features.parquet"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>saved 38,480 rows x 24 columns -&gt; data/processed/01_data.parquet
+saved 24 feature rows -&gt; data/processed/01_features.parquet</code></pre>
+</div>
+</div>
+</section>
+<section id="closing-remarks" class="level2">
+<h2 class="anchored" data-anchor-id="closing-remarks">Closing remarks</h2>
+<p>This notebook cleaned the raw dataset (three different missing-value strategies, one anomaly removal), built and justified a small set of engineered features (<code>weight_missing</code>, <code>order_probability</code>, <code>price_per_weight</code>, <code>number_of_days</code>, <code>views_per_day</code>, <code>orders_per_day</code>, <code>len_tags</code>, <code>len_title</code>, <code>len_query</code>), and, most importantly for this project’s actual question, found early, concrete evidence that a product’s <code>category</code> leaves a visible fingerprint on the <em>search query</em> that leads to it, not just on the product’s own text.</p>
+<p>The cleaned dataset and a machine-readable feature catalog are saved to <code>data/processed/</code> for reuse. The <a href="../notebooks/02_product_classification.html">next notebook</a> builds the supervised classifier for Part 2, using both the numeric and text features characterized here.</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
