@@ -63,3 +63,37 @@ def build_pipeline(C: float = 1.0, random_state: int = 42) -> Pipeline:
             ("classify", LinearSVC(C=C, random_state=random_state, dual="auto")),
         ]
     )
+
+
+def build_query_category_pipeline(C: float = 1.0, random_state: int = 42) -> Pipeline:
+    """Build a text-only category classifier, for queries with no numeric features.
+
+    Notebook 05 compares this against imputing `NUMERIC_FEATURES` with their
+    training-set median inside `build_pipeline`: the two score within noise
+    of each other (macro-F1 0.843 vs. 0.842), since a constant imputed value
+    carries no discriminative signal, so this is the simpler, more honest
+    choice: it doesn't pretend a query has a price. Meant to be fit on the
+    same product text as `build_pipeline`, so a query can be classified "as
+    if it were a product" per the challenge spec's Part 5 requirement.
+
+    Parameters
+    ----------
+    C : float, default 1.0
+        Regularization strength for `LinearSVC`, matching `build_pipeline`'s
+        default for consistency (notebook 02's tuned value).
+    random_state : int, default 42
+        Passed to `LinearSVC` for reproducible fits.
+
+    Returns
+    -------
+    sklearn.pipeline.Pipeline
+        Unfitted pipeline: `TfidfVectorizer(min_df=2)` followed by
+        `LinearSVC`. Expects a 1D iterable of text (e.g. `product_text` or a
+        query, already cleaned/tokenized via `src.features.text.joined_tokens`).
+    """
+    return Pipeline(
+        steps=[
+            ("tfidf", TfidfVectorizer(min_df=2)),
+            ("classify", LinearSVC(C=C, random_state=random_state, dual="auto")),
+        ]
+    )
